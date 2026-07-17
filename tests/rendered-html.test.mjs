@@ -18,7 +18,9 @@ test("server-renders the conversion homepage", async () => {
   assert.match(html, /Clear price\./);
   assert.match(html, /Orange County/);
   assert.match(html, /\$69/);
-  assert.match(html, /Get exact price/i);
+  assert.match(html, /Build my estimate/i);
+  assert.match(response.headers.get("content-security-policy") ?? "", /frame-ancestors 'none'/);
+  assert.equal(response.headers.get("x-content-type-options"), "nosniff");
   assert.doesNotMatch(html, /Your site is taking shape|Codex is working|react-loading-skeleton/);
 });
 
@@ -75,17 +77,50 @@ test("project includes storage, migrations, favicon, OG and only two verify labe
     access(new URL("../drizzle/0000_cultured_phalanx.sql", import.meta.url)),
     access(new URL("../drizzle/0001_military_zaladane.sql", import.meta.url)),
     access(new URL("../drizzle/0002_complete_lucky_pierre.sql", import.meta.url)),
+    access(new URL("../drizzle/0003_odd_gargoyle.sql", import.meta.url)),
   ]);
 });
 
 test("every canonical launch price follows the 70 percent rule and names a source", async () => {
   const data = await readFile(new URL("../lib/site-data.ts", import.meta.url), "utf8");
   const rows = [...data.matchAll(/competitor:\s*([\d.]+),\s*price:\s*([\d.]+),[^\n]+source:\s*"([^"]+)"/g)];
-  assert.equal(rows.length, 23);
+  assert.equal(rows.length, 22);
   for (const [, competitorText, priceText, source] of rows) {
     const competitor = Number(competitorText); const price = Number(priceText);
     const expected = competitor < 10 ? Number((competitor * .7).toFixed(2)) : Math.floor(competitor * .7);
     assert.equal(price, expected, `${source}: ${competitor} should display ${expected}`);
     assert.ok(source.length > 0);
   }
+});
+
+test("legal center renders current, source-backed privacy and claims records", async () => {
+  const [privacy, notice, cookie, claims] = await Promise.all([render("/privacy"), render("/notice-at-collection"), render("/cookie-policy"), render("/claims-damage")]);
+  for (const response of [privacy, notice, cookie, claims]) assert.equal(response.status, 200);
+  assert.match(await privacy.text(), /California privacy choices/);
+  assert.match(await notice.text(), /Categories, purposes, and intended retention/);
+  assert.match(await cookie.text(), /does not persist name, email, phone, address/);
+  assert.match(await claims.text(), /Preserve evidence and mitigate/);
+});
+
+test("sitemap excludes conversion, private, and proof-pending routes", async () => {
+  const response = await render("/sitemap.xml");
+  assert.equal(response.status, 200);
+  const xml = await response.text();
+  assert.doesNotMatch(xml, /\/get-quote|\/book|\/results|\/reviews|\/team/);
+  assert.match(xml, /\/privacy/);
+  assert.match(xml, /\/claims-damage/);
+});
+
+test("quote implementation never fabricates a local submission reference and recalculates on the server", async () => {
+  const [wizard, route, data] = await Promise.all([
+    readFile(new URL("../components/quote-wizard.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/api/quotes/route.ts", import.meta.url), "utf8"),
+    readFile(new URL("../lib/site-data.ts", import.meta.url), "utf8"),
+  ]);
+  assert.doesNotMatch(wizard, /localReference/);
+  assert.match(wizard, /Nothing was submitted/);
+  assert.match(wizard, /step >= 8\).*removeItem\("novaclean-quote"\)/);
+  assert.match(route, /calculateEstimate/);
+  assert.doesNotMatch(route, /body\.total|body\.comparison/);
+  assert.match(data, /const coreZips = new Set/);
 });

@@ -24,6 +24,8 @@ export const quotes = sqliteTable("quotes", {
   address: text("address").notNull().default(""),
   accessNotes: text("access_notes").notNull().default(""),
   consentAt: text("consent_at").notNull(),
+  termsVersion: text("terms_version").notNull().default("2026-07-16"),
+  privacyVersion: text("privacy_version").notNull().default("2026-07-16"),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
   updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
@@ -36,6 +38,7 @@ export const careRequests = sqliteTable("care_requests", {
   email: text("email").notNull(),
   message: text("message").notNull().default(""),
   status: text("status").notNull().default("received"),
+  privacyVersion: text("privacy_version").notNull().default("2026-07-16"),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
@@ -69,6 +72,7 @@ export const commercialLeads = sqliteTable("commercial_leads", {
   notes: text("notes").notNull().default(""),
   uploadKeys: text("upload_keys", { mode: "json" }).$type<string[]>().notNull().default([]),
   consentAt: text("consent_at").notNull(),
+  privacyVersion: text("privacy_version").notNull().default("2026-07-16"),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
@@ -83,5 +87,6 @@ export const contactMessages = sqliteTable("contact_messages", {
   topic: text("topic").notNull().default("question"),
   message: text("message").notNull(),
   consentAt: text("consent_at").notNull(),
+  privacyVersion: text("privacy_version").notNull().default("2026-07-16"),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });

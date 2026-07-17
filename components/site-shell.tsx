@@ -31,9 +31,9 @@ export function Header() {
 
   return (
     <>
-      <div className="signal-bar">
+      <div className="signal-bar" role="region" aria-label="Pricing transparency notice">
         <span className="signal-dot" aria-hidden="true" />
-        Launch pricing is live across Orange County
+        Transparent launch pricing · sources and scope shown
         <Link href="/price-comparison-methodology">See how prices are set</Link>
       </div>
       <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
@@ -44,7 +44,7 @@ export function Header() {
           </nav>
           <div className="header-actions">
             <Link className="language-link" href="/es" aria-label="Cambiar a español">ES</Link>
-            <Link className="button button--ink button--small" href="/get-quote">Get exact price <span aria-hidden="true">↗</span></Link>
+            <Link className="button button--ink button--small" href="/get-quote">Build estimate <span aria-hidden="true">↗</span></Link>
             <button className="menu-button" type="button" aria-expanded={open} aria-controls="mobile-menu" onClick={() => setOpen(!open)}>
               <span>{open ? "Close" : "Menu"}</span><i aria-hidden="true" />
             </button>
@@ -72,7 +72,7 @@ export function Footer() {
       <div className="shell footer-lead">
         <p className="eyebrow eyebrow--light">A better first step</p>
         <h2>Show us the textile.<br /><em>See the price.</em></h2>
-        <Link className="round-link" href="/get-quote" aria-label="Get an exact price"><span>Get price</span><b>↗</b></Link>
+        <Link className="round-link" href="/get-quote" aria-label="Build a service estimate"><span>Estimate</span><b>↗</b></Link>
       </div>
       <div className="shell footer-grid">
         <div><Logo inverse /><p>Mobile upholstery, mattress, rug and carpet care built around clear scope—not door-step surprises.</p></div>
@@ -83,7 +83,7 @@ export function Footer() {
       <div className="shell footer-bottom">
         <span>© {year} Novaclean</span>
         <span>{brand.region}</span>
-        <span><Link href="/privacy">Privacy</Link> · <Link href="/terms">Terms</Link> · <Link href="/accessibility">Accessibility</Link></span>
+        <span><Link href="/privacy">Privacy</Link> · <Link href="/notice-at-collection">Collection notice</Link> · <Link href="/terms">Terms</Link> · <Link href="/cookie-policy">Cookies</Link> · <Link href="/claims-damage">Claims</Link> · <Link href="/accessibility">Accessibility</Link></span>
       </div>
       <div className="footer-word" aria-hidden="true" />
     </footer>
@@ -92,11 +92,11 @@ export function Footer() {
 
 export function MobileConversionBar() {
   return (
-    <div className="mobile-conversion" aria-label="Quick actions">
+    <nav className="mobile-conversion" aria-label="Quick actions">
       <Link href="/contact">Message</Link>
-      <Link href="/get-quote?mode=photos">Text photos</Link>
-      <Link className="is-primary" href="/get-quote">Get price</Link>
-    </div>
+      <Link href="/get-quote?mode=photos">Add photos</Link>
+      <Link className="is-primary" href="/get-quote">Estimate</Link>
+    </nav>
   );
 }
 

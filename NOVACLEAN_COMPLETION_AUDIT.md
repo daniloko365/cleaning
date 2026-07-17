@@ -1,92 +1,96 @@
-# Novaclean completion audit
+# Novaclean independent completion audit
 
 Audit date: 2026-07-16  
 Blueprint: `../orange_county_textile_cleaning_website_blueprint.md`  
-Market source: `orange_county_textile_market_audit_calling_workbook 2.numbers`
+Market workbook: `../../all info/orange_county_textile_market_audit_calling_workbook 2.numbers`
 
-## Outcome
+## Independent verdict
 
-The site implements the complete launch architecture for a mobile Orange County upholstery and textile cleaning business. It closes the market gaps identified in the audit with visible scope-matched pricing, photo-first qualification, a request-to-book flow, explicit service limits, self-service customer care, commercial intake, source-backed comparisons and privacy-aware operational records.
+The codebase is a tested release candidate for a mobile Orange County upholstery and textile-care business. The conversion architecture, server-side pricing, D1/R2 data path, customer-care lookup, legal center, security headers, accessibility, responsive behavior, SEO controls, and Cloudflare deployment path are implemented.
 
-The build does not invent business facts that were absent from the source material. Those facts are concentrated in two visible launch gates:
+It is **not yet approved for unrestricted public launch**. The remaining blockers are business facts and external account configuration, not missing page templates: verified legal entity and public contact details, California counsel review, insurance/credential evidence, real staff and work proof, production communications/calendar operations, a tested retention/deletion workflow, and authenticated Cloudflare resources. The current hosted review version should remain private until those inputs are supplied.
 
-1. `[VERIFY BEFORE LAUNCH]` — identity, phone/text/email, people, proof, insurance/credentials and external providers.
-2. `[VERIFY LEGAL]` — current scope-matched comparison evidence and California advertising review.
+## Market weaknesses closed
 
-## Market-gap coverage
-
-| Competitor weakness | Implemented response |
+| Market weakness | Novaclean response |
 |---|---|
-| Hidden prices and late minimums | 23 canonical item/bundle prices, crossed comparison, source, checked date, comparable scope, ZIP-zone minimum before contact details. |
-| Carpet-first category confusion | Home, navigation and service hierarchy lead with sofa, sectional, mattress and pet-related textile care. |
-| Weak digital close | Eight-step mobile quote and request-to-book flow with upload, estimate, requested route window, consent and full-scope confirmation. |
-| Bait-and-switch risk | One price registry powers home, pricing, service pages and estimate; extra work requires explanation and approval. |
-| Vague pet-odor promises | Separate treatment logic, contamination depth, manual-review path, limitations and post-dry care request. |
-| Unclear fabric eligibility | Care-code and material routes, unknown-fabric continuation, hidden-area testing and referral limits. |
-| Lost context after booking | NC reference, portal, track, reschedule, care/re-clean, prepare and aftercare routes. |
-| Weak commercial handoff | B2B brief with locations, counts, access, procurement/COI needs, target date and file upload. |
-| Thin local SEO | City routes exist but remain `noindex` and absent from sitemap until real city-level proof is present. |
-| Fake trust patterns | No invented phone, team member, review, result, credential, address, live capacity or same-day claim. |
+| Hidden prices and late minimums | 22 canonical public prices/bundles show a crossed published comparison, source, checked month, matched scope, and zone minimum before contact details. |
+| Carpet-first category confusion | Home, navigation, services, and estimator lead with sofa, sectional, mattress, pet, rug, and textile care. |
+| Call-only quoting | Eight-step mobile flow covers ZIP, item, fabric, condition, photos, estimate, preferred window, contact, and consent. |
+| Doorstep price changes | One price registry feeds all surfaces; the server independently recalculates the estimate and ignores client-supplied totals. Added work requires explanation and approval. |
+| Fake “live booking” | Generated windows are labeled preferences. A request remains requested until checked against real route capacity. |
+| Overpromised stain/odor results | Material and contamination checks, safe-method limits, referral rules, and a separate quality/damage path replace absolute claims. |
+| Weak fabric qualification | Care-code and material education, unknown-fabric continuation, test requirements, and explicit decline/referral conditions are present. |
+| Lost post-booking context | NC reference, private status lookup, reschedule, care/claim, prepare, and aftercare routes retain the service context. |
+| Weak commercial handoff | B2B intake captures company, role, counts, locations, access, timing, procurement/COI needs, and optional site media. |
+| Thin local SEO and fabricated trust | City, results, reviews, team, credentials, and Spanish routes stay `noindex` or out of the sitemap until they have real proof and review. |
 
-## Functional coverage
+## Pricing verification
 
-- 65 useful indexable sitemap routes plus protected operational/system routes.
-- 10 service pages, six fabric routes, ten guides, commercial verticals, legal/policy pages and EN/ES structural landing pages.
-- ZIP classification for core, extended and unavailable zones.
-- Browser-saved quote draft and resume path.
-- Five controlled JPG/PNG/WebP uploads, 8 MB each, stored through R2.
-- D1 records for quotes, commercial leads, contact messages, care requests and first-party analytics.
-- GPC and Do Not Track respected before analytics collection.
-- Notification-ready email/SMS copy without pretending that an unverified provider delivered it.
-- Admin control room protected by a long `ADMIN_ACCESS_TOKEN`; aggregate counts only, 404 on unconfigured/invalid access.
-- Customer portal uses reference + booking email, not a forced password account.
+- Every displayed Novaclean rate is 70% of the named published comparison, rounded down for whole-dollar rates; low per-unit rates retain cents.
+- Key Pit Klean public prices support the current $99 three-seat sofa, $79 loveseat, $89 room, $140 three rooms, $199 whole home, $3 stair, $25 hallway, $40 pet-area, $35 room protector, and $1.50/sq-ft rug comparisons.
+- PR Cleaning public prices support the current $169 L sectional, $219 U sectional, $79 mattress, $59 rug, and $39 stain comparisons.
+- Barefoot Clean publicly states $45–65 side-chair and $10–20 dining-chair ranges; Novaclean compares against the lower bound.
+- Mattress, rug, and protector scope copy was corrected during this audit to match the source rather than imply a narrower or different unit.
+- Auto-interior pricing was removed from the public matrix because operational readiness was not proven.
+- Bundles use transparent sums of matched public items rather than invented former prices.
 
-## Pricing acceptance
+The price program still needs a documented refresh/retirement owner and California advertising counsel review before public launch. A competitor changing or removing a price requires the affected comparison to be updated or withdrawn.
 
-- Every canonical rate follows the launch rule: `floor(public comparison × 0.70)` for whole-dollar prices; low per-unit rates retain cents.
-- Every crossed price resolves to a named source, checked month and comparable scope.
-- Core-zone visit minimum is zero for sofa, sectional and mattress.
-- Extended-zone minimum and its crossed comparison are disclosed after ZIP.
-- Dining-chair and add-on eligibility/minimum rules are visible before confirmation.
-- No hard-coded customer price exists outside `lib/site-data.ts`.
+## Critical defects found and fixed in this audit
 
-## Booking and reliability acceptance
+1. **False success on database failure:** the browser previously generated a local-looking NC reference when `/api/quotes` failed. It now remains on the contact step, states that nothing was submitted, and preserves only a non-contact draft.
+2. **Booking ZIP bypass:** `/book` could skip ZIP validation without a valid service ZIP. It now starts at ZIP unless the provided ZIP is in an explicit supported set.
+3. **PII in local storage:** name, email, phone, address, notes, access information, consent, and uploads are no longer persisted in the quote draft. Non-contact drafts expire after seven days.
+4. **Client-controlled price:** `/api/quotes` previously accepted `total` and `comparison`. It now calculates both from the canonical server registry and validates item, quantity, add-ons, zone, material, condition, window, identity, and consent.
+5. **Fabricated care records:** `/api/care` could create a claim for a fake NC reference. It now verifies the reference/email pair and permits only documented reschedule or claim requests.
+6. **Upload privacy:** uploads now validate image signatures and structure and remove common JPEG EXIF/IPTC/comment, PNG text/EXIF/time, and WebP EXIF/XMP metadata before private R2 storage.
+7. **Successful quote resurrected as draft:** an effect could recreate a resume draft after success. Step 8 now guarantees removal.
+8. **Accessibility landmarks/contrast:** nested complementary landmarks, unlandmarked quick actions, and a transient hero fade contrast failure were corrected.
+9. **SEO leakage:** conversion, account, proof-pending, incomplete translation, and unverified trust routes are noindex and excluded from the sitemap as appropriate.
+10. **Unverified structured data:** `LocalBusiness` was replaced by `Organization` until a real NAP can support local-business markup. Canonical origin is environment-driven.
+11. **Unverified claims:** the UV-method statement and unverified public email were removed; “exact price” and live-availability language were replaced with estimate/preference language.
+12. **API and response hardening:** JSON payload limits, stricter email/enumeration/date validation, consent-policy versioning, constant-work admin token comparison, no-store API responses, CSP, clickjacking, MIME, referrer, permissions, COOP, HSTS, and robots headers were added.
 
-- Mobile estimate and request-to-book flow requires no call.
-- Full submitted scope appears on confirmation.
-- Requested windows are never represented as confirmed live capacity.
-- Out-of-area requests do not proceed as bookings and retain their browser draft.
-- API paths were exercised locally for upload, quote, care, commercial and contact records.
-- Local graceful fallback preserves a request when a provider/server is temporarily unavailable.
-- Admin registry explicitly identifies calendar conflict detection, message delivery, payment, source expiry, abandoned drafts and city-proof controls.
+## Legal and privacy coverage
 
-## Trust, privacy and legal acceptance
+The policy center now contains substantive, versioned pages for:
 
-- Stock/editorial imagery is documented and never presented as a real customer result.
-- The interactive before/after module is labeled as a method demonstration.
-- Guarantee exclusions and a 7-day care/re-clean path are published.
-- Privacy, notice at collection, media consent, SMS, cancellation, terms, commercial terms, accessibility, service limitations and claims paths are present.
-- Quote marketing consent is separate and optional; operational photo use does not grant marketing permission.
-- Customer status lookup does not reveal address, phone, price or item details.
+- Privacy Policy, categories/sources/purposes/disclosure/retention/security/California rights/GPC/children/changes.
+- Notice at Collection with category, purpose, sale/share, sensitive-data, and intended-retention disclosures.
+- Website and Service Terms covering formation, estimates, appointments, customer duties, change approval, outcomes, payment state, care, media, website use, and preserved statutory rights.
+- SMS Terms, cancellation/rescheduling, care guarantee, operational photo/media policy, commercial terms, accessibility statement, Cookie and Storage Policy, and Claims and Damage Process.
 
-## SEO, accessibility and performance acceptance
+The forms link the notice/privacy/terms at the point of consent and store policy version `2026-07-16`. Quote uploads do not grant marketing permission. The current build does not use third-party advertising cookies and suppresses optional analytics under Global Privacy Control or Do Not Track.
 
-- Canonicals, sitemap, robots, EN/ES alternates and LocalBusiness/Service/FAQ JSON-LD are present.
-- City pages are `noindex` until the blueprint's proof threshold is met.
-- Keyboard skip link, semantic labels, visible focus, reduced motion and responsive layout are implemented.
-- Automated axe WCAG A/AA audit: zero violations on home, pricing, quote, commercial request, contact, portal and admin login after motion settles.
-- Mobile portal and desktop home have no scrollable horizontal overflow.
-- Last browser vitals check on home: CLS 0.0; FCP/LCP 164 ms; TTFB 56.9 ms in the local test environment.
+These pages are operationally specific, but they do not replace advice from a California attorney. Entity identity, physical/public contact disclosures, venue/contracting language, insurance, actual retention automation, and the final marketing/SMS implementation require counsel and operations verification.
 
-## Automated verification
+## Verification evidence
 
 - `npm run lint`: pass.
-- `npm test`: pass, 6/6 tests.
-- Production build: pass.
-- 65/65 sitemap URLs: HTTP 200 in local verification.
-- Protected admin API without a valid secret: HTTP 404 as designed.
-- Visible verification labels: exactly two.
+- `npm audit`: 0 known dependency vulnerabilities after secure PostCSS/esbuild overrides and current Next/Vite/Cloudflare tooling updates.
+- `npm test`: pass after final build; rendered route, pricing rule, security headers, legal pages, sitemap, server-price integrity, migration, and media sanitizer coverage.
+- End-to-end browser story: quote UI → `/api/quotes` → local D1 → confirmation → `/track`: pass.
+- Tampered client total `$1`: ignored; API returned canonical `$69` estimate and `$99` comparison.
+- Out-of-area quote: rejected. Fake care reference: rejected. Invalid JPG: rejected. Valid PNG: stored through local R2.
+- 57/57 sitemap URLs: HTTP 200, HTML where expected, nonempty unique titles and canonical links.
+- Proof/private route audit: team, results, reviews, gift cards, referral, care plan, credentials, Spanish draft, portal, admin, quote/book, and commercial form protected with `noindex` as designed.
+- Axe 4.11.4: zero automated violations on home, pricing, quote, privacy, commercial request, contact, portal, and admin after fixes. Automated tools cover only part of accessibility; manual keyboard, zoom, responsive overflow, reduced-motion, and mobile menu checks were also performed.
+- Desktop and 390 px mobile visual checks: no horizontal overflow, no framework error overlay, expected navigation and conversion controls visible.
+- Route security: API responses are `no-store`; private/operational routes add `X-Robots-Tag`; all responses receive the configured security-header set.
 
-## Deliberate launch gates
+## Remaining launch blockers and limitations
 
-The code and UX are complete, but public factual activation still depends on the two consolidated gates above. Real capacity, sender/SMS delivery, payment/deposits, full CRM sync, named technician/ETA, customer invoices, real reviews/cases, credentials and public NAP are not simulated. Connecting those verified inputs changes provider configuration and evidence content; it does not require rebuilding the site architecture.
+1. **Cloudflare account authentication:** the repository contains a verified Workers deployment generator and GitHub Actions workflow, but this machine is not authenticated to the owner’s Cloudflare account and the available dashboard is at login. Production D1/R2 IDs and scoped credentials must be configured.
+2. **Correct Cloudflare product:** this is a full-stack Next.js application with route handlers, SSR, D1, and R2. It must deploy to Cloudflare Workers, not a static Pages export. Static Pages would silently break core functionality.
+3. **Legal business facts:** legal entity, business/public address treatment, verified phone/text/email, contracting identity, and jurisdiction language are still unknown.
+4. **Operational providers:** email sender, SMS provider and suppression logic, real route calendar, payment/deposit policy, and CRM notifications are not connected and are not simulated.
+5. **Trust evidence:** team, reviews, results, insurance, licenses, certifications, and background-check claims remain unpublished until verified.
+6. **Retention execution:** stated retention periods need an operational deletion job, legal-hold process, request log, and accountable owner before public data collection.
+7. **Abuse controls:** Cloudflare WAF/rate limits, bot controls, alerting, and production log retention should be configured at the account layer after deployment.
+8. **Media lifecycle:** unsubmitted uploads can be orphaned and require the retention cleanup job; public result use still requires a separate signed release.
+9. **Price operations:** competitor sources need periodic evidence capture and refresh; the current check is dated July 2026.
+
+## Release recommendation
+
+Approve the code for source control, private stakeholder review, and authenticated production-environment setup. Do not open the site to the public or collect real customer data until the blockers above are assigned, verified, and recorded. After that, rerun migrations, the end-to-end quote/track flow, accessibility checks, security headers, and canonical/domain checks on the final Cloudflare origin.

@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
   CarePage, CityPage, CommercialPage, ContactPage, FAQPage, GenericPage, GuidePage, GuidesHub, LaunchChecklistPage,
-  MethodologyPage, PortalPage, PricingPage, ServiceAreaPage, ServicePage, ServicesHub,
+  LegalDocumentPage, MethodologyPage, PortalPage, PricingPage, ServiceAreaPage, ServicePage, ServicesHub,
 } from "@/components/page-templates";
+import { legalDocuments } from "@/lib/legal-content";
 import { cities, cityName, guides, servicePages } from "@/lib/site-data";
 
 type PageProps = { params: Promise<{ slug: string[] }> };
@@ -27,7 +28,7 @@ const copy: Record<string, { eyebrow: string; title: string; dek: string; intro?
     { title: "Why this matters", body: "Mobile service enters a customer’s home. Clear identity, role and escalation details build more trust than a generic ‘our experts’ paragraph." },
   ]},
   "contact": { eyebrow: "Contact", title: "Start with the item. Reach a person when needed.", dek: "Until the verified business phone and SMS line are connected, every contact path safely enters the working photo-quote flow.", sections: [
-    { title: "Price and booking", body: "Use Get Exact Price for ZIP, item, photos, estimate and a requested window. It saves a reference even if a third-party messaging integration is not yet connected." },
+    { title: "Price and booking", body: "Use Build Estimate for ZIP, item, photos, estimate and a requested window. A reference appears only after the server confirms that the request was stored." },
     { title: "Existing request", body: "Keep your NC reference and use Track, Reschedule or Care Request. Those routes preserve the reason for contact instead of starting a generic inbox thread." },
     { title: "Commercial", body: "Property teams should use the commercial walkthrough request so item count, access, vendor documents and approval ownership stay attached to the lead." },
   ]},
@@ -87,12 +88,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const path = slug.join("/");
   const canonical = `/${path}`;
   const privateRoute = ["portal","track","reschedule","claim","launch-checklist","out-of-area","upload-failed","payment-failed","offline","500"].includes(path) || path.startsWith("thank-you/");
+  const proofPending = ["team", "results", "reviews", "gift-cards", "referral", "care-plan", "licenses-insurance", "es"].includes(path);
   if (slug[0] === "service-area" && slug[1]) return { title: `${cityName(slug[1])} Upholstery Cleaning`, description: `Photo-first mobile textile cleaning estimates in ${cityName(slug[1])}, Orange County.`, alternates: { canonical }, robots: { index: false, follow: true } };
   if (slug[0] === "services" && slug[1]) { const page = servicePages.find((item) => item.slug === slug[1]); if (page) return { title: page.name, description: `Photo-first ${page.name.toLowerCase()} pricing across Orange County.`, alternates: { canonical } }; }
   if (slug[0] === "guides" && slug[1]) { const guide = guides.find((item) => item.slug === slug[1]); if (guide) return { title: guide.title, description: guide.dek, alternates: { canonical } }; }
-  if (copy[path]) return { title: copy[path].title, description: copy[path].dek, alternates: { canonical }, robots: privateRoute ? { index: false, follow: true } : undefined };
-  const title = path === "pricing" ? "Pricing" : path === "services" ? "Services" : path === "service-area" ? "Service Area" : path === "guides" ? "Guides" : "Novaclean";
-  return { title, alternates: path === "es" ? { canonical, languages: { "en-US": "/", "es-US": "/es" } } : { canonical }, robots: privateRoute ? { index: false, follow: true } : undefined };
+  if (slug[0] === "fabrics" && slug[1] && fabricCopy[slug[1]]) return { title: fabricCopy[slug[1]], description: `Eligibility-first guidance for ${fabricCopy[slug[1]].toLowerCase()}, care codes, testing, and cleaning limits.`, alternates: { canonical } };
+  if (slug[0] === "commercial") {
+    const segmentTitles: Record<string, string> = { "property-managers": "Textile Care for Property Managers", offices: "Office Seating Care", "multifamily-turnovers": "Multifamily Turnover Textile Care", "hospitality-seating": "Hospitality Seating Care", "request-bid": "Request a Commercial Walkthrough" };
+    return { title: segmentTitles[slug[1] || ""] || "Commercial Textile Care", description: "Documented Orange County textile-care scopes for properties, offices, multifamily turns, and hospitality seating.", alternates: { canonical }, robots: slug[1] === "request-bid" ? { index: false, follow: true } : undefined };
+  }
+  if (legalDocuments[path]) return { title: legalDocuments[path].title, description: legalDocuments[path].summary, alternates: { canonical } };
+  if (copy[path]) return { title: copy[path].title, description: copy[path].dek, alternates: { canonical }, robots: privateRoute || proofPending ? { index: false, follow: true } : undefined };
+  const routeTitles: Record<string, string> = { pricing: "Pricing", services: "Services", "service-area": "Service Area", "orange-county": "Orange County Service Area", guides: "Guides", faq: "Frequently Asked Questions", "price-comparison-methodology": "Price Comparison Methodology", "launch-checklist": "Launch Verification", portal: "Customer Portal", fabrics: "Fabric Care Library" };
+  const title = routeTitles[path] || "Novaclean";
+  return { title, alternates: path === "es" ? { canonical, languages: { "en-US": "/", "es-US": "/es" } } : { canonical: path === "orange-county" ? "/service-area" : canonical }, robots: privateRoute || proofPending ? { index: false, follow: true } : undefined };
 }
 
 export default async function CatchAllPage({ params }: PageProps) {
@@ -107,6 +116,7 @@ export default async function CatchAllPage({ params }: PageProps) {
   if (slug[0] === "guides" && slug[1] && guides.some((item) => item.slug === slug[1])) return <GuidePage slug={slug[1]} />;
   if (path === "faq") return <FAQPage />;
   if (path === "price-comparison-methodology") return <MethodologyPage />;
+  if (legalDocuments[path]) return <LegalDocumentPage document={legalDocuments[path]} />;
   if (path === "launch-checklist") return <LaunchChecklistPage />;
   if (path === "contact") return <ContactPage />;
   if (path === "portal") return <PortalPage />;

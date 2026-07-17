@@ -2,12 +2,13 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@/components/analytics";
+import { siteUrl } from "@/lib/site-url";
 
 const geist = Geist({ variable: "--font-geist", subsets: ["latin"] });
 const mono = Geist_Mono({ variable: "--font-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://novacleanoc.com"),
+  metadataBase: new URL(siteUrl),
   title: { default: "Novaclean | Orange County Textile Care", template: "%s | Novaclean" },
   description: "Photo-first pricing for mobile upholstery, mattress, rug and carpet care in Orange County.",
   icons: { icon: "/favicon.png", apple: "/apple-touch-icon.png" },
@@ -19,12 +20,12 @@ export const viewport: Viewport = { themeColor: "#102d2a", colorScheme: "light" 
 
 const organization = {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
+  "@type": "Organization",
   name: "Novaclean",
   description: "Mobile upholstery and textile cleaning in Orange County, California.",
   areaServed: { "@type": "AdministrativeArea", name: "Orange County, California" },
   priceRange: "$$",
-  url: "https://novacleanoc.com",
+  url: siteUrl,
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

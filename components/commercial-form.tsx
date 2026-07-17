@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 
 type Lead = {
   company: string; name: string; role: string; email: string; phone: string; propertyType: string; locations: string;
@@ -55,7 +56,7 @@ export function CommercialForm() {
       <div className="field"><label htmlFor="procurement">Procurement / payment terms (optional)</label><textarea id="procurement" value={lead.procurement} onChange={(e) => patch({ procurement: e.target.value })} /></div>
       <div className="field"><label htmlFor="commercial-notes">Scope notes</label><textarea id="commercial-notes" value={lead.notes} onChange={(e) => patch({ notes: e.target.value })} placeholder="Materials, recurring issues, parking, elevators, approval process…" /></div>
       <div className="field"><label htmlFor="commercial-files">Photos or floor plan (JPG, PNG, WebP)</label><input id="commercial-files" type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={(e) => setFiles(Array.from(e.target.files ?? []).slice(0, 5))} /></div>
-      <label className="consent"><input type="checkbox" checked={lead.consent} onChange={(e) => patch({ consent: e.target.checked })} required /><span>I authorize Novaclean to use this information to review and respond to the commercial request.</span></label>
+      <label className="consent"><input type="checkbox" checked={lead.consent} onChange={(e) => patch({ consent: e.target.checked })} required /><span>I authorize Novaclean to review and respond to this request under the <Link href="/notice-at-collection">notice at collection</Link>, <Link href="/privacy">privacy policy</Link>, and <Link href="/commercial-terms">commercial terms</Link>.</span></label>
       <button className="button button--ink" disabled={busy}>{busy ? "Saving brief…" : "Request walkthrough ↗"}</button>
       {error && <p className="quote-error" role="alert">{error}</p>}{status && <p className="care-result" role="status">{status}</p>}
     </form>

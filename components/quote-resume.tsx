@@ -9,8 +9,9 @@ export function QuoteResume() {
     const saved = localStorage.getItem("novaclean-quote");
     if (!saved) return;
     try {
-      const parsed = JSON.parse(saved) as { step?: number };
-      if ((parsed.step ?? 0) > 0 && (parsed.step ?? 0) < 8) queueMicrotask(() => setVisible(true));
+      const parsed = JSON.parse(saved) as { step?: number; savedAt?: string };
+      if (!parsed.savedAt || Date.now() - Date.parse(parsed.savedAt) > 7 * 24 * 60 * 60 * 1000) { localStorage.removeItem("novaclean-quote"); return; }
+      if ((parsed.step ?? 0) > 0 && (parsed.step ?? 0) < 7) queueMicrotask(() => setVisible(true));
     } catch { /* ignore malformed local state */ }
   }, []);
   if (!visible) return null;

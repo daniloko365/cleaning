@@ -2,7 +2,6 @@ export const brand = {
   name: "Novaclean",
   descriptor: "Upholstery & textile care",
   region: "Orange County, California",
-  email: "hello@novacleanoc.com",
 };
 
 export type PriceItem = {
@@ -13,7 +12,7 @@ export type PriceItem = {
   price: number;
   unit?: string;
   scope: string;
-  category: "upholstery" | "mattress" | "rug" | "carpet" | "auto" | "addon" | "bundle";
+  category: "upholstery" | "mattress" | "rug" | "carpet" | "addon" | "bundle";
   source: keyof typeof priceSources;
 };
 
@@ -31,18 +30,17 @@ export const prices: PriceItem[] = [
   { id: "u-sectional", label: "U-shape sectional", shortLabel: "U sectional", competitor: 219, price: 153, scope: "up to 7 seating sections", category: "upholstery", source: "pr" },
   { id: "side-chair", label: "Accent chair / recliner", shortLabel: "Chair", competitor: 45, price: 31, scope: "one standard chair", category: "upholstery", source: "barefoot" },
   { id: "dining-chair", label: "Dining chair", shortLabel: "Dining chair", competitor: 10, price: 7, scope: "seat only; four-chair minimum or add-on", category: "upholstery", source: "barefoot" },
-  { id: "mattress", label: "Mattress cleaning", shortLabel: "Mattress", competitor: 79, price: 55, scope: "one side, standard size", category: "mattress", source: "pr" },
-  { id: "rug", label: "Area rug cleaning", shortLabel: "Area rug", competitor: 59, price: 41, scope: "small synthetic rug", category: "rug", source: "pr" },
+  { id: "mattress", label: "Mattress cleaning", shortLabel: "Mattress", competitor: 79, price: 55, scope: "starting price, Twin to King; condition can change scope", category: "mattress", source: "pr" },
+  { id: "rug", label: "Area rug cleaning", shortLabel: "Area rug", competitor: 59, price: 41, scope: "starting price; final scope depends on size and material", category: "rug", source: "pr" },
   { id: "rug-sqft", label: "Area rug by square foot", shortLabel: "Rug / sq ft", competitor: 1.5, price: 1.05, unit: "/ sq ft", scope: "eligible in-home rugs", category: "rug", source: "keypit" },
   { id: "stain", label: "Targeted stain treatment", shortLabel: "Stain treatment", competitor: 39, price: 27, scope: "per affected area; outcome not guaranteed", category: "addon", source: "pr" },
   { id: "pet", label: "Pet enzyme treatment", shortLabel: "Pet treatment", competitor: 40, price: 28, scope: "surface contamination area", category: "addon", source: "keypit" },
-  { id: "protector", label: "Fabric protector", shortLabel: "Protector", competitor: 35, price: 24, scope: "per standard sofa/chair item", category: "addon", source: "keypit" },
+  { id: "protector", label: "Carpet protector", shortLabel: "Protector / room", competitor: 35, price: 24, scope: "per eligible carpeted room; upholstery coverage requires review", category: "addon", source: "keypit" },
   { id: "carpet-room", label: "Carpet — one room", shortLabel: "1 carpet room", competitor: 89, price: 62, scope: "up to 200 sq ft", category: "carpet", source: "keypit" },
   { id: "carpet-3", label: "Carpet — three rooms", shortLabel: "3 carpet rooms", competitor: 140, price: 98, scope: "up to 600 sq ft total", category: "carpet", source: "keypit" },
   { id: "carpet-home", label: "Carpet — whole home", shortLabel: "Whole home", competitor: 199, price: 139, scope: "up to 1,500 cleanable sq ft", category: "carpet", source: "keypit" },
   { id: "stairs", label: "Carpeted stairs", shortLabel: "Stair", competitor: 3, price: 2.1, unit: "/ step", scope: "per standard stair, tread and riser definition confirmed", category: "carpet", source: "keypit" },
   { id: "hallway", label: "Carpeted hallway", shortLabel: "Hallway", competitor: 25, price: 17, scope: "one standard-length hallway", category: "carpet", source: "keypit" },
-  { id: "auto", label: "Auto textile interior", shortLabel: "Auto interior", competitor: 149, price: 104, scope: "seats and carpet, standard condition", category: "auto", source: "pr" },
   { id: "living-room-reset", label: "Living Room Pair", shortLabel: "Living Room Pair", competitor: 178, price: 124, scope: "3-seat sofa + loveseat", category: "bundle", source: "combined" },
   { id: "sectional-pet", label: "Sectional Plus", shortLabel: "Sectional Plus", competitor: 214, price: 149, scope: "L sectional + standard side chair", category: "bundle", source: "combined" },
   { id: "sleep-reset", label: "Sleep Reset for Two", shortLabel: "Sleep Reset for Two", competitor: 158, price: 110, scope: "two standard mattresses", category: "bundle", source: "combined" },
@@ -61,7 +59,7 @@ export const servicePages = [
   { slug: "sectional-cleaning", name: "Sectional cleaning", kicker: "No ambiguous per-seat math", priceId: "l-sectional", image: "/media/final/novaclean-hero.webp", problem: "high-use sections, cushion edges and uneven wear", outcome: "consistent cleaning across the full sectional", method: "We count seating sections from photos, confirm construction, then lock the scope before arrival." },
   { slug: "mattress-cleaning", name: "Mattress cleaning", kicker: "A cleaner sleep surface", priceId: "mattress", image: "/media/final/mattress-home.webp", problem: "surface soil, sweat marks and routine refresh needs", outcome: "a refreshed surface and clear dry-time guidance", method: "Label check → HEPA-style dry extraction → compatible spot care → controlled low-moisture cleaning." },
   { slug: "chair-recliner-ottoman-cleaning", name: "Chair, recliner & ottoman cleaning", kicker: "Small pieces, same care", priceId: "side-chair", image: "/media/final/dining-home.webp", problem: "arm-rest buildup, head-rest oils and spotty seats", outcome: "an even, refreshed finish", method: "Construction and code check → detail vacuum → controlled cleaning by panel." },
-  { slug: "pet-stain-odor-removal", name: "Pet stain & odor treatment", kicker: "Diagnose before deodorizing", priceId: "pet", image: "/media/final/pet-safe.webp", problem: "surface incidents, recurring odor or suspected deep contamination", outcome: "the right treatment level with honest limits", method: "UV/visual assessment when useful → contamination-level check → enzyme dwell → extraction → reassessment." },
+  { slug: "pet-stain-odor-removal", name: "Pet stain & odor treatment", kicker: "Diagnose before deodorizing", priceId: "pet", image: "/media/final/pet-safe.webp", problem: "surface incidents, recurring odor or suspected deep contamination", outcome: "the right treatment level with honest limits", method: "Visual and contamination-level check → compatible enzyme dwell → extraction → reassessment." },
   { slug: "area-rug-cleaning", name: "Area rug cleaning", kicker: "Material first", priceId: "rug", image: "/media/final/dining-home.webp", problem: "tracked-in soil, spots and pet use", outcome: "safe in-home care or a specialist referral", method: "Fiber, backing and dye-stability checks determine whether in-home cleaning is appropriate." },
   { slug: "carpet-cleaning", name: "Carpet cleaning", kicker: "Rooms priced clearly", priceId: "carpet-room", image: "/media/final/mattress-home.webp", problem: "traffic lanes, routine soil and move-related refresh", outcome: "cleaner traffic areas with simple room definitions", method: "Room measurement → dry soil removal → pre-spray → agitation as needed → extraction." },
   { slug: "stain-removal", name: "Targeted stain treatment", kicker: "Evidence, not promises", priceId: "stain", image: "/media/final/cleaning-process.webp", problem: "isolated food, beverage, body oil or unknown spots", outcome: "best-safe improvement without fabric damage", method: "Identify likely stain family → fiber-safe chemistry → controlled dwell → extraction → document remaining change." },
@@ -104,6 +102,34 @@ export const nav = [
 ] as const;
 
 export const compareDate = "July 2026";
+
+export const quoteItemIds = ["loveseat", "sofa", "l-sectional", "u-sectional", "side-chair", "dining-chair", "mattress", "rug", "carpet-room", "carpet-3", "living-room-reset", "sectional-pet", "sleep-reset", "move-reset", "whole-home"] as const;
+
+const extendedZips = new Set(["90620","90621","90623","90630","90631","90680","90720","90740","90742","90743","92629","92630","92637","92651","92672","92673","92674","92675","92676","92677","92678","92679","92688","92690","92691","92692","92693","92694","92801","92802","92803","92804","92805","92806","92807","92808","92809","92821","92823","92831","92832","92833","92835","92861","92865","92866","92867","92870","92871"]);
+const coreZips = new Set(["92602","92603","92604","92606","92610","92612","92614","92617","92618","92620","92624","92625","92626","92627","92646","92647","92648","92649","92653","92655","92656","92657","92660","92661","92662","92663","92683","92701","92703","92704","92705","92706","92707","92708","92840","92841","92843","92844","92845","92868","92869","92886","92887"]);
+
+export function serviceZone(zip: string): "core" | "extended" | "out" {
+  if (extendedZips.has(zip)) return "extended";
+  if (coreZips.has(zip)) return "core";
+  return "out";
+}
+
+export function calculateEstimate(input: { zip: string; itemId: string; quantity: number; stain: boolean; pet: boolean }) {
+  const item = prices.find((candidate) => candidate.id === input.itemId && quoteItemIds.includes(candidate.id as typeof quoteItemIds[number]));
+  const zone = serviceZone(input.zip);
+  if (!item || zone === "out") return null;
+  const quantity = item.id === "dining-chair" ? Math.min(24, Math.max(4, Math.trunc(input.quantity) || 4)) : 1;
+  const additions = (input.stain ? getPrice("stain").price : 0) + (input.pet ? getPrice("pet").price : 0);
+  const comparisonAdditions = (input.stain ? getPrice("stain").competitor : 0) + (input.pet ? getPrice("pet").competitor : 0);
+  const minimum = zone === "core" ? minimums.core : minimums.extended;
+  return {
+    item,
+    quantity,
+    zone,
+    total: Math.max(item.price * quantity + additions, minimum),
+    comparison: Math.max(item.competitor * quantity + comparisonAdditions, Math.round(minimum / .7)),
+  };
+}
 
 export function getPrice(id: string) {
   return prices.find((item) => item.id === id) ?? prices[1];

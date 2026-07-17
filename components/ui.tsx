@@ -91,7 +91,7 @@ export function CTA({ title = "Your textile has a story. Start with a photo.", c
       <div className="shell cta-panel__inner">
         <p className="eyebrow eyebrow--light">Ready when you are</p>
         <h2>{title}</h2><p>{copy}</p>
-        <div className="button-row"><Link className="button button--acid" href="/get-quote">Get exact price ↗</Link><Link className="text-link text-link--light" href="/how-it-works">See how it works →</Link></div>
+        <div className="button-row"><Link className="button button--acid" href="/get-quote">Build my estimate ↗</Link><Link className="text-link text-link--light" href="/how-it-works">See how it works →</Link></div>
       </div>
     </section>
   );
@@ -113,7 +113,7 @@ export function PricingTable({ category }: { category?: string }) {
 
 export function VerifyBlock({ legal = false }: { legal?: boolean }) {
   return (
-    <aside className={`verify-block ${legal ? "verify-block--legal" : ""}`}>
+    <aside className={`verify-block ${legal ? "verify-block--legal" : ""}`} role="note">
       <span>{legal ? "[VERIFY LEGAL]" : "[VERIFY BEFORE LAUNCH]"}</span>
       <div>
         <h3>{legal ? "Comparison-price review" : "Business facts and integrations"}</h3>

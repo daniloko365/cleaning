@@ -66,7 +66,7 @@ export default function HomePage() {
           <SectionHeading eyebrow="The proof standard" title={<>Same angle. Same light.<br /><em>Move the line.</em></>} copy="A useful result shows the textile, issue, method and remaining limitation—not an exaggerated color shift. This launch demo establishes the intended gallery interaction; real job pairs replace it before proof claims go live." />
           <div className="result-layout">
             <BeforeAfter />
-            <aside><p className="eyebrow">Result record · demo format</p><h3>Charcoal performance weave</h3><dl><div><dt>Item</dt><dd>3-seat sofa</dd></div><div><dt>Issue</dt><dd>Everyday soil</dd></div><div><dt>Method</dt><dd>Controlled extraction</dd></div><div><dt>Limit</dt><dd>No fabricated outcome claim</dd></div></dl><Link className="text-link" href="/results">See proof requirements →</Link></aside>
+            <aside role="note"><p className="eyebrow">Result record · demo format</p><h3>Charcoal performance weave</h3><dl><div><dt>Item</dt><dd>3-seat sofa</dd></div><div><dt>Issue</dt><dd>Everyday soil</dd></div><div><dt>Method</dt><dd>Controlled extraction</dd></div><div><dt>Limit</dt><dd>No fabricated outcome claim</dd></div></dl><Link className="text-link" href="/results">See proof requirements →</Link></aside>
           </div>
         </div>
       </section>

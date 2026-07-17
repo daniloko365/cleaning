@@ -15,7 +15,7 @@ export function ZipChecker({ dark = false }: { dark?: boolean }) {
   return (
     <form className={`zip-checker ${dark ? "zip-checker--dark" : ""}`} onSubmit={submit} noValidate>
       <label htmlFor={dark ? "zip-dark" : "zip-home"}>Check your ZIP</label>
-      <div><input id={dark ? "zip-dark" : "zip-home"} inputMode="numeric" autoComplete="postal-code" maxLength={5} placeholder="92618" value={zip} onChange={(event) => { setZip(event.target.value.replace(/\D/g, "")); setError(""); }} aria-describedby={error ? "zip-error" : undefined} /><button type="submit">See my price <span aria-hidden="true">↗</span></button></div>
+      <div><input id={dark ? "zip-dark" : "zip-home"} inputMode="numeric" autoComplete="postal-code" maxLength={5} placeholder="92618" value={zip} onChange={(event) => { setZip(event.target.value.replace(/\D/g, "")); setError(""); }} aria-describedby={error ? "zip-error" : undefined} /><button type="submit">Build estimate <span aria-hidden="true">↗</span></button></div>
       {error && <small id="zip-error" role="alert">{error}</small>}
     </form>
   );

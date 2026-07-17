@@ -2,12 +2,21 @@ import { count, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { analyticsEvents, careRequests, commercialLeads, contactMessages, quotes } from "@/db/schema";
 
+async function sameSecret(left: string, right: string) {
+  const encoded = (value: string) => crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
+  const [a, b] = await Promise.all([encoded(left), encoded(right)]);
+  const first = new Uint8Array(a); const second = new Uint8Array(b);
+  let difference = left.length === right.length ? 0 : 1;
+  for (let index = 0; index < first.length; index++) difference |= first[index] ^ second[index];
+  return difference === 0;
+}
+
 export async function GET(request: Request) {
   try {
     const { env } = await import("cloudflare:workers");
     const expected = (env as unknown as { ADMIN_ACCESS_TOKEN?: string }).ADMIN_ACCESS_TOKEN;
     const supplied = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
-    if (!expected || supplied.length < 20 || supplied !== expected) return Response.json({ error: "Not found" }, { status: 404 });
+    if (!expected || supplied.length < 20 || !(await sameSecret(supplied, expected))) return Response.json({ error: "Not found" }, { status: 404 });
     const db = await getDb();
     const [quoteRows, careRows, commercialRows, messageRows, eventRows] = await Promise.all([
       db.select({ value: count() }).from(quotes).where(eq(quotes.status, "requested")),
