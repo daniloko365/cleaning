@@ -75,7 +75,7 @@ The build does not invent business facts that were absent from the source materi
 - City pages are `noindex` until the blueprint's proof threshold is met.
 - Keyboard skip link, semantic labels, visible focus, reduced motion and responsive layout are implemented.
 - Automated axe WCAG A/AA audit: zero violations on home, pricing, quote, commercial request, contact, portal and admin login after motion settles.
-- Mobile portal horizontal overflow: zero pixels.
+- Mobile portal and desktop home have no scrollable horizontal overflow.
 - Last browser vitals check on home: CLS 0.0; FCP/LCP 164 ms; TTFB 56.9 ms in the local test environment.
 
 ## Automated verification
