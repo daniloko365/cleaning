@@ -23,8 +23,6 @@ export function routeLocale(slug: string[]) {
 }
 
 type ShellMessages = {
-  signal: string;
-  priceMethod: string;
   nav: [string, string][];
   estimate: string;
   menu: string;
@@ -49,12 +47,8 @@ type CommonMessages = {
   buildEstimate: string;
   howItWorks: string;
   askQuestion: string;
-  source: string;
-  checked: string;
   scope: string;
-  publicBenchmark: string;
   currentPrice: string;
-  matchedRate: string;
   details: string;
   from: string;
 };
@@ -65,8 +59,6 @@ export const messages: Record<
 > = {
   en: {
     shell: {
-      signal: "Straightforward public pricing · scope and sources shown",
-      priceMethod: "How prices are set",
       nav: [
         ["Services", "/services"],
         ["Pricing", "/pricing"],
@@ -98,20 +90,14 @@ export const messages: Record<
       buildEstimate: "Build my estimate ↗",
       howItWorks: "See how it works →",
       askQuestion: "Ask a question →",
-      source: "Source",
-      checked: "checked",
       scope: "Scope",
-      publicBenchmark: "Published benchmark",
       currentPrice: "Current price",
-      matchedRate: "Public-rate match",
       details: "Details ↗",
       from: "From",
     },
   },
   es: {
     shell: {
-      signal: "Precios públicos claros · alcance y fuentes visibles",
-      priceMethod: "Cómo fijamos los precios",
       nav: [
         ["Servicios", "/services"],
         ["Precios", "/pricing"],
@@ -143,12 +129,8 @@ export const messages: Record<
       buildEstimate: "Calcular mi precio ↗",
       howItWorks: "Ver cómo funciona →",
       askQuestion: "Hacer una pregunta →",
-      source: "Fuente",
-      checked: "consultado",
       scope: "Alcance",
-      publicBenchmark: "Referencia publicada",
       currentPrice: "Precio actual",
-      matchedRate: "Precio público igualado",
       details: "Detalles ↗",
       from: "Desde",
     },
@@ -158,9 +140,9 @@ export const messages: Record<
 export const homeMessages = {
   en: {
     heroEyebrow: "Orange County · mobile textile care",
-    heroTitle: "Clean fabric. Clear price.",
+    heroTitle: "Orange County upholstery cleaning. Clear price.",
     heroDek:
-      "Sofas, sectionals, mattresses and carpets—with an instant menu-based estimate and photo review before confirmation.",
+      "Sofas, sectionals, mattresses, rugs and carpets—with clear menu prices and photo review before confirmation.",
     heroPrice: "Current sofa price",
     priceNoteLabel: "Scope check",
     priceNote:
@@ -169,9 +151,9 @@ export const homeMessages = {
     priceEyebrow: "Fast price anchors",
     priceTitle: "Start with the item. Know the number.",
     priceCopy:
-      "Novaclean matches the cited public rates for comparable scope. The source, checked date and service definition stay beside every price.",
+      "Straightforward prices for common items, with the service scope beside every number. Photos help confirm fabric, construction and condition before work.",
     priceFoot:
-      "No core-zone visit minimum for sofa, sectional or mattress service. Source records and checked dates are public.",
+      "No core-zone visit minimum for sofa, sectional or mattress service. Inclusions and service-zone minimums appear before contact details.",
     fullPricing: "Open full pricing →",
     problemEyebrow: "Choose the problem",
     problemTitle: "Don’t learn our menu. Tell us what happened.",
@@ -247,7 +229,7 @@ export const homeMessages = {
   },
   es: {
     heroEyebrow: "Orange County · cuidado textil móvil",
-    heroTitle: "Textiles limpios. Precio claro.",
+    heroTitle: "Limpieza de tapicería en Orange County. Precio claro.",
     heroDek:
       "Sofás, seccionales, colchones y moquetas: cálculo inmediato por menú y revisión de fotos antes de confirmar.",
     heroPrice: "Precio actual del sofá",
@@ -258,9 +240,9 @@ export const homeMessages = {
     priceEyebrow: "Precios de referencia",
     priceTitle: "Empieza por el artículo. Conoce el precio.",
     priceCopy:
-      "Novaclean iguala las tarifas públicas citadas para un alcance comparable. La fuente, fecha y definición aparecen junto a cada precio.",
+      "Precios claros para artículos comunes, con el alcance junto a cada cifra. Las fotos ayudan a confirmar tejido, construcción y estado antes del servicio.",
     priceFoot:
-      "Sin mínimo de visita en la zona principal para sofás, seccionales o colchones. Las fuentes y fechas son públicas.",
+      "Sin mínimo de visita en la zona principal para sofás, seccionales o colchones. Las inclusiones y los mínimos de zona aparecen antes de pedir tus datos.",
     fullPricing: "Ver todos los precios →",
     problemEyebrow: "Elige el problema",
     problemTitle: "No memorices el menú. Cuéntanos qué pasó.",
@@ -487,7 +469,7 @@ export const quoteMessages = {
     steps: ["ZIP", "Item", "Details", "Estimate", "Window", "Contact"],
     railTitle: "Your item, priced plainly.",
     railCopy:
-      "Start with a public menu price. Photos and details confirm eligibility and scope before service.",
+      "Start with a clear menu price. Photos and details confirm eligibility and scope before service.",
     backSite: "Back to site",
     complete: "Complete",
     step: "Step",
@@ -506,7 +488,7 @@ export const quoteMessages = {
     itemEye: "Choose the item",
     itemTitle: "What needs care?",
     itemCopy:
-      "Choose the primary item. Every option below is connected to the same public price matrix.",
+      "Choose the primary item. Every option below uses the same Novaclean price menu.",
     itemLabel: "Primary item",
     quantity: "Quantity",
     itemRequired: "Choose an item to continue.",
@@ -532,7 +514,6 @@ export const quoteMessages = {
       "This is an instant menu-based estimate. We review the item, photos and details before accepting the scope; nothing extra starts without approval.",
     estimateLabel: "Novaclean estimate",
     scope: "Menu scope",
-    benchmark: "Published benchmark source",
     zone: "Service zone",
     material: "Material / condition",
     core: "Core · no primary-item visit minimum",
@@ -564,7 +545,6 @@ export const quoteMessages = {
     requested: "Requested service",
     addons: "Add-on",
     estimate: "Estimate",
-    source: "Benchmark source",
     zipZone: "Zone / ZIP",
     preferred: "Preferred window",
     addressAccess: "Address / access",
@@ -578,7 +558,7 @@ export const quoteMessages = {
     steps: ["ZIP", "Artículo", "Detalles", "Precio", "Franja", "Contacto"],
     railTitle: "Tu artículo, con precio claro.",
     railCopy:
-      "Empieza con un precio público de menú. Las fotos y detalles confirman elegibilidad y alcance antes del servicio.",
+      "Empieza con un precio de menú claro. Las fotos y detalles confirman elegibilidad y alcance antes del servicio.",
     backSite: "Volver al sitio",
     complete: "Completo",
     step: "Paso",
@@ -597,7 +577,7 @@ export const quoteMessages = {
     itemEye: "Elige el artículo",
     itemTitle: "¿Qué necesita cuidado?",
     itemCopy:
-      "Elige el artículo principal. Todas las opciones usan la misma matriz pública de precios.",
+      "Elige el artículo principal. Todas las opciones usan el mismo menú de precios Novaclean.",
     itemLabel: "Artículo principal",
     quantity: "Cantidad",
     itemRequired: "Elige un artículo para continuar.",
@@ -623,7 +603,6 @@ export const quoteMessages = {
       "Es un cálculo inmediato por menú. Revisamos artículo, fotos y detalles antes de aceptar el alcance; nada extra empieza sin aprobación.",
     estimateLabel: "Cálculo Novaclean",
     scope: "Alcance del menú",
-    benchmark: "Fuente de referencia publicada",
     zone: "Zona de servicio",
     material: "Material / estado",
     core: "Principal · sin mínimo para artículo principal",
@@ -655,7 +634,6 @@ export const quoteMessages = {
     requested: "Servicio solicitado",
     addons: "Extra",
     estimate: "Cálculo",
-    source: "Fuente de referencia",
     zipZone: "Zona / ZIP",
     preferred: "Franja preferida",
     addressAccess: "Dirección / acceso",

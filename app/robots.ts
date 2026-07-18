@@ -10,13 +10,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: [
           "/api/",
           "/admin",
-          "/portal",
-          "/launch-checklist",
-          "/thank-you/",
-          "/track",
-          "/reschedule",
-          "/claim",
-          "/reviews-preview",
         ],
       },
     ],

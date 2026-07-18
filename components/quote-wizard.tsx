@@ -4,10 +4,12 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Logo } from "@/components/site-shell";
 import {
+  configuredPrice,
+  useSiteConfig,
+} from "@/components/site-config-provider";
+import {
   calculateEstimate,
-  compareDate,
   getPrice,
-  getPriceSource,
   minimums,
   money,
   quoteItemIds,
@@ -20,6 +22,7 @@ import {
   translatedPrice,
   type Locale,
 } from "@/lib/i18n";
+import { priceValues } from "@/lib/site-config";
 
 type QuoteData = {
   zip: string;
@@ -92,6 +95,10 @@ export function QuoteWizard({
   locale?: Locale;
 }) {
   const copy = quoteMessages[locale];
+  const config = useSiteConfig();
+  const priceOverrides = priceValues(config);
+  const effectivePrice = (id: string) =>
+    configuredPrice(translatedPrice(getPrice(id), locale), locale, config);
   const serviceItem = itemIds.includes(initialService)
     ? initialService
     : initialService === "move-reset"
@@ -199,6 +206,8 @@ export function QuoteWizard({
       quantity: data.quantity,
       stain: data.stain,
       pet: data.pet,
+      priceOverrides,
+      extendedMinimum: config.conversion.extendedMinimum,
     }) ??
     calculateEstimate({
       zip: "92618",
@@ -206,15 +215,22 @@ export function QuoteWizard({
       quantity: data.quantity,
       stain: data.stain,
       pet: data.pet,
+      priceOverrides,
+      extendedMinimum: config.conversion.extendedMinimum,
     })!;
-  const base = translatedPrice(estimate.item, locale);
-  const baseSource = getPriceSource(estimate.item);
+  const base = configuredPrice(
+    translatedPrice(estimate.item, locale),
+    locale,
+    config,
+  );
   const itemTotal = estimate.item.price * Math.max(1, estimate.quantity);
   const additions =
-    (data.stain ? getPrice("stain").price : 0) +
-    (data.pet ? getPrice("pet").price : 0);
+    (data.stain ? effectivePrice("stain").price : 0) +
+    (data.pet ? effectivePrice("pet").price : 0);
   const serviceMinimum =
-    estimate.zone === "core" ? minimums.core : minimums.extended;
+    estimate.zone === "core"
+      ? minimums.core
+      : config.conversion.extendedMinimum;
   const total = estimate.total;
 
   function patchData(next: Partial<QuoteData>) {
@@ -355,6 +371,34 @@ export function QuoteWizard({
           ["restoration", "Review", "Unknown / delicate"],
         ];
 
+  if (!config.conversion.bookingEnabled) {
+    return (
+      <main className="quote-shell quote-shell--paused" id="main-content">
+        <section className="quote-main">
+          <div className="quote-step">
+            <Logo locale={locale} />
+            <p className="eyebrow">
+              {locale === "es" ? "Solicitudes pausadas" : "Requests paused"}
+            </p>
+            <h1>
+              {locale === "es"
+                ? "Volveremos a abrir el cálculo pronto."
+                : "Online estimates will reopen soon."}
+            </h1>
+            <p>
+              {locale === "es"
+                ? config.conversion.pausedMessageEs
+                : config.conversion.pausedMessageEn}
+            </p>
+            <Link className="button button--ink" href={localizedPath(locale, "/contact")}>
+              {locale === "es" ? "Ir a contacto ↗" : "Open contact ↗"}
+            </Link>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main
       id="main-content"
@@ -448,7 +492,7 @@ export function QuoteWizard({
                     }
                   >
                     {itemIds.map((id) => {
-                      const item = translatedPrice(getPrice(id), locale);
+                      const item = effectivePrice(id);
                       return (
                         <option key={id} value={id}>
                           {item.label} — {money(item.price)}
@@ -546,7 +590,7 @@ export function QuoteWizard({
                     }
                   />
                   <strong>{copy.stain}</strong>
-                  <span>+ {money(getPrice("stain").price)}</span>
+                  <span>+ {money(effectivePrice("stain").price)}</span>
                 </label>
                 <label className="option-card">
                   <input
@@ -557,7 +601,7 @@ export function QuoteWizard({
                     }
                   />
                   <strong>{copy.pet}</strong>
-                  <span>+ {money(getPrice("pet").price)}</span>
+                  <span>+ {money(effectivePrice("pet").price)}</span>
                 </label>
               </div>
               <div className="quote-fields">
@@ -639,13 +683,13 @@ export function QuoteWizard({
                   {data.stain && (
                     <div className="estimate-card__row">
                       <span>{copy.stain}</span>
-                      <b>{money(getPrice("stain").price)}</b>
+                      <b>{money(effectivePrice("stain").price)}</b>
                     </div>
                   )}
                   {data.pet && (
                     <div className="estimate-card__row">
                       <span>{copy.pet}</span>
-                      <b>{money(getPrice("pet").price)}</b>
+                      <b>{money(effectivePrice("pet").price)}</b>
                     </div>
                   )}
                   {itemTotal + additions < serviceMinimum && (
@@ -659,33 +703,11 @@ export function QuoteWizard({
                     <b>{base.scope}</b>
                   </div>
                   <div className="estimate-card__row">
-                    <span>{copy.benchmark}</span>
-                    <b>
-                      <a
-                        className="text-link"
-                        href={baseSource.url}
-                        target={
-                          baseSource.url.startsWith("http")
-                            ? "_blank"
-                            : undefined
-                        }
-                        rel={
-                          baseSource.url.startsWith("http")
-                            ? "noreferrer"
-                            : undefined
-                        }
-                      >
-                        {baseSource.name}
-                      </a>{" "}
-                      · {compareDate}
-                    </b>
-                  </div>
-                  <div className="estimate-card__row">
                     <span>{copy.zone}</span>
                     <b>
                       {serviceZone(data.zip) === "core"
                         ? copy.core
-                        : `${copy.extended} · ${money(minimums.extended)} ${copy.minimum}`}
+                        : `${copy.extended} · ${money(config.conversion.extendedMinimum)} ${copy.minimum}`}
                     </b>
                   </div>
                   <div className="estimate-card__row">
@@ -845,28 +867,6 @@ export function QuoteWizard({
                   <div className="estimate-card__row">
                     <span>{copy.scope}</span>
                     <b>{base.scope}</b>
-                  </div>
-                  <div className="estimate-card__row">
-                    <span>{copy.source}</span>
-                    <b>
-                      <a
-                        className="text-link"
-                        href={baseSource.url}
-                        target={
-                          baseSource.url.startsWith("http")
-                            ? "_blank"
-                            : undefined
-                        }
-                        rel={
-                          baseSource.url.startsWith("http")
-                            ? "noreferrer"
-                            : undefined
-                        }
-                      >
-                        {baseSource.name}
-                      </a>{" "}
-                      · {compareDate}
-                    </b>
                   </div>
                   <div className="estimate-card__row">
                     <span>{copy.zipZone}</span>

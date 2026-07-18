@@ -24,6 +24,8 @@ const WRITE_POLICIES: Record<string, RateLimitPolicy> = {
 
 export function rateLimitPolicy(request: Request): RateLimitPolicy | null {
   const { pathname } = new URL(request.url);
+  if (request.method === "POST" && pathname === "/api/admin/login")
+    return { key: "admin-login", limit: 8, windowSeconds: 15 * 60 };
   if (request.method === "POST" && WRITE_POLICIES[pathname]) return WRITE_POLICIES[pathname];
   if (request.method === "GET" && pathname === "/api/care") return { key: "care-read", limit: 30, windowSeconds: 10 * 60 };
   if (pathname.startsWith("/api/admin/")) return { key: "admin", limit: 30, windowSeconds: 5 * 60 };
@@ -64,4 +66,3 @@ export async function enforceRateLimit(request: Request, db: D1Like): Promise<Re
     { status: 429, headers: { "cache-control": "no-store", "retry-after": String(retryAfter) } },
   );
 }
-

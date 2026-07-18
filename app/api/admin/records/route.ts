@@ -30,7 +30,7 @@ function parseKeys(value: unknown) {
 
 export async function POST(request: Request) {
   try {
-    if (!(await hasAdminAccess(request))) return json({ error: "Not found" }, { status: 404 });
+    if (!(await hasAdminAccess(request))) return json({ error: "Authentication required." }, { status: 401 });
     const body = await readJson<Record<string, unknown>>(request, 4_000);
     const type = clean(body.type, 20) as RecordType;
     const reference = clean(body.reference, 80).toUpperCase();
@@ -69,4 +69,3 @@ export async function POST(request: Request) {
     return json({ error: error instanceof Error && error.message === "PAYLOAD_TOO_LARGE" ? "The request is too large." : "Unable to update the record." }, { status: 503 });
   }
 }
-

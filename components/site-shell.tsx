@@ -10,6 +10,7 @@ import {
   messages,
   type Locale,
 } from "@/lib/i18n";
+import { useSiteConfig } from "@/components/site-config-provider";
 
 export function Logo({
   inverse = false,
@@ -79,17 +80,6 @@ export function Header({ locale = defaultLocale }: { locale?: Locale }) {
 
   return (
     <>
-      <div
-        className="signal-bar"
-        role="region"
-        aria-label="Pricing transparency notice"
-      >
-        <span className="signal-dot" aria-hidden="true" />
-        {copy.shell.signal}
-        <Link href={localizedPath(locale, "/price-comparison-methodology")}>
-          {copy.shell.priceMethod}
-        </Link>
-      </div>
       <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
         <div className="shell header-inner">
           <Logo locale={locale} />
@@ -186,6 +176,7 @@ export function Header({ locale = defaultLocale }: { locale?: Locale }) {
 export function Footer({ locale = defaultLocale }: { locale?: Locale }) {
   const year = new Date().getFullYear();
   const copy = messages[locale];
+  const config = useSiteConfig();
   return (
     <footer className="site-footer">
       <div className="shell footer-lead">
@@ -215,6 +206,25 @@ export function Footer({ locale = defaultLocale }: { locale?: Locale }) {
         <div>
           <Logo inverse locale={locale} />
           <p>{copy.shell.footerIntro}</p>
+          {(config.business.phone ||
+            config.business.email ||
+            config.business.hours) && (
+            <address className="footer-contact">
+              {config.business.phone && (
+                <a
+                  href={`tel:${config.business.phone.replace(/[^+\d]/g, "")}`}
+                >
+                  {config.business.phone}
+                </a>
+              )}
+              {config.business.email && (
+                <a href={`mailto:${config.business.email}`}>
+                  {config.business.email}
+                </a>
+              )}
+              {config.business.hours && <span>{config.business.hours}</span>}
+            </address>
+          )}
         </div>
         <div>
           <h3>{copy.shell.explore}</h3>
@@ -314,11 +324,23 @@ export function SiteShell({
   children: React.ReactNode;
   locale?: Locale;
 }) {
+  const config = useSiteConfig();
+  const noticeText =
+    locale === "es" ? config.notice.textEs : config.notice.textEn;
   useEffect(() => {
     document.documentElement.lang = locale === "es" ? "es-US" : "en-US";
   }, [locale]);
   return (
     <div lang={locale === "es" ? "es" : "en"}>
+      {config.notice.enabled && noticeText && (
+        <div className="service-notice" role="status">
+          {config.notice.href ? (
+            <Link href={config.notice.href}>{noticeText} →</Link>
+          ) : (
+            noticeText
+          )}
+        </div>
+      )}
       <Header locale={locale} />
       <main id="main-content" tabIndex={-1}>
         {children}

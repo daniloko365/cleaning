@@ -20,22 +20,23 @@ import { LEGAL_VERSION, type LegalDocument } from "@/lib/legal-content";
 import {
   cities,
   cityName,
-  compareDate,
   faq as faqData,
   getPrice,
-  getPriceSource,
   guides,
-  minimums,
   money,
-  prices,
   servicePages,
 } from "@/lib/site-data";
 import { siteUrl } from "@/lib/site-url";
+import {
+  defaultSiteConfig,
+  type PublicSiteConfig,
+} from "@/lib/site-config";
 import {
   defaultLocale,
   faqMessages,
   localizedPath,
   messages,
+  translatedPrice,
   translatedService,
   type Locale,
 } from "@/lib/i18n";
@@ -309,40 +310,85 @@ export function ServicesHub({ locale = defaultLocale }: { locale?: Locale }) {
 export function ServicePage({
   slug,
   locale = defaultLocale,
+  siteConfig = defaultSiteConfig,
 }: {
   slug: string;
   locale?: Locale;
+  siteConfig?: PublicSiteConfig;
 }) {
   const service = translatedService(
     servicePages.find((item) => item.slug === slug)!,
     locale,
   );
-  const price = getPrice(service.priceId);
-  const source = getPriceSource(price);
+  const translated = translatedPrice(getPrice(service.priceId), locale);
+  const override = siteConfig.prices[service.priceId];
+  const price = {
+    ...translated,
+    price: override?.price ?? translated.price,
+    scope:
+      (locale === "es" ? override?.scopeEs : override?.scopeEn) ||
+      translated.scope,
+  };
+  const canonicalPath = localizedPath(locale, `/services/${service.slug}`);
   const serviceSchema = {
     "@context": "https://schema.org",
-    "@type": "Service",
-    name: service.name,
-    description: service.problem,
-    areaServed: {
-      "@type": "AdministrativeArea",
-      name: "Orange County, California",
-    },
-    provider: { "@type": "Organization", name: "Novaclean", url: siteUrl },
-    offers: {
-      "@type": "Offer",
-      price: price.price,
-      priceCurrency: "USD",
-      url: `${siteUrl}/services/${service.slug}`,
-      description: price.scope,
-    },
+    "@graph": [
+      {
+        "@type": "Service",
+        "@id": `${siteUrl}${canonicalPath}#service`,
+        name: `${service.name} — Orange County`,
+        serviceType: service.name,
+        description: service.problem,
+        image: `${siteUrl}${service.image}`,
+        areaServed: {
+          "@type": "AdministrativeArea",
+          name: "Orange County, California",
+        },
+        provider: { "@id": `${siteUrl}/#organization` },
+        offers: {
+          "@type": "Offer",
+          price: price.price,
+          priceCurrency: "USD",
+          url: `${siteUrl}${canonicalPath}`,
+          description: price.scope,
+          availability: "https://schema.org/InStock",
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: locale === "es" ? "Inicio" : "Home",
+            item: `${siteUrl}${localizedPath(locale, "/")}`,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: locale === "es" ? "Servicios" : "Services",
+            item: `${siteUrl}${localizedPath(locale, "/services")}`,
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: service.name,
+            item: `${siteUrl}${canonicalPath}`,
+          },
+        ],
+      },
+    ],
   };
   return (
     <SiteShell locale={locale}>
       <PageHero
         locale={locale}
         eyebrow={service.kicker}
-        title={service.name}
+        title={
+          locale === "es"
+            ? `${service.name} en Orange County`
+            : `${service.name} in Orange County`
+        }
         dek={
           locale === "es"
             ? `Servicio móvil en Orange County con precio de menú inmediato y revisión de fotos antes de confirmar.`
@@ -368,20 +414,12 @@ export function ServicePage({
           </div>
           <div>
             <small>
-              {locale === "es"
-                ? "Referencia pública igualada"
-                : "Matched public benchmark"}
+              {locale === "es" ? "Área de servicio" : "Service area"}
             </small>
             <strong>
-              {money(price.benchmark)} ·{" "}
-              <a
-                href={source.url}
-                target={source.url.startsWith("http") ? "_blank" : undefined}
-                rel={source.url.startsWith("http") ? "noreferrer" : undefined}
-              >
-                {source.name}
-              </a>{" "}
-              · {locale === "es" ? "consultado" : "checked"} {compareDate}
+              {locale === "es"
+                ? "Servicio móvil en Orange County"
+                : "Mobile service across Orange County"}
             </strong>
           </div>
           <div>
@@ -429,9 +467,9 @@ export function ServicePage({
                 </p>
                 <Link
                   className="text-link"
-                  href={localizedPath(locale, "/price-comparison-methodology")}
+                  href={localizedPath(locale, "/pricing")}
                 >
-                  {locale === "es" ? "Método de precios →" : "Pricing method →"}
+                  {locale === "es" ? "Ver todos los precios →" : "View full pricing →"}
                 </Link>
               </div>
             </div>
@@ -578,7 +616,13 @@ export function ServicePage({
   );
 }
 
-export function PricingPage({ locale = defaultLocale }: { locale?: Locale }) {
+export function PricingPage({
+  locale = defaultLocale,
+  siteConfig = defaultSiteConfig,
+}: {
+  locale?: Locale;
+  siteConfig?: PublicSiteConfig;
+}) {
   return (
     <SiteShell locale={locale}>
       <PageHero
@@ -591,8 +635,8 @@ export function PricingPage({ locale = defaultLocale }: { locale?: Locale }) {
         }
         dek={
           locale === "es"
-            ? `Novaclean iguala referencias públicas locales de alcance comparable, consultadas en ${compareDate}.`
-            : `Novaclean matches documented local public rates for comparable scope, checked ${compareDate}.`
+            ? "Consulta precios para sofás, seccionales, colchones, alfombras y moquetas antes de solicitar el servicio."
+            : "See prices for sofas, sectionals, mattresses, rugs and carpet cleaning before requesting service."
         }
       >
         <div className="page-hero__actions">
@@ -604,9 +648,9 @@ export function PricingPage({ locale = defaultLocale }: { locale?: Locale }) {
           </Link>
           <Link
             className="text-link text-link--light"
-            href={localizedPath(locale, "/price-comparison-methodology")}
+            href={localizedPath(locale, "/how-it-works")}
           >
-            {locale === "es" ? "Leer metodología →" : "Read methodology →"}
+            {locale === "es" ? "Ver cómo funciona →" : "See how it works →"}
           </Link>
         </div>
       </PageHero>
@@ -677,8 +721,8 @@ export function PricingPage({ locale = defaultLocale }: { locale?: Locale }) {
               <h3>{locale === "es" ? "Zona extendida" : "Extended zone"}</h3>
               <p>
                 {locale === "es"
-                  ? `Mínimo de visita de $${minimums.extended}, visible después de consultar el ZIP.`
-                  : `$${minimums.extended} visit minimum, shown after ZIP.`}
+                  ? `Mínimo de visita de $${siteConfig.conversion.extendedMinimum}, visible después de consultar el ZIP.`
+                  : `$${siteConfig.conversion.extendedMinimum} visit minimum, shown after ZIP.`}
               </p>
             </article>
             <article>
@@ -776,9 +820,11 @@ export function ServiceAreaPage({
 export function CityPage({
   slug,
   locale = defaultLocale,
+  siteConfig = defaultSiteConfig,
 }: {
   slug: string;
   locale?: Locale;
+  siteConfig?: PublicSiteConfig;
 }) {
   const name = cityName(slug);
   return (
@@ -825,7 +871,7 @@ export function CityPage({
               <li>
                 {locale === "es"
                   ? "Cuidado de sofás y seccionales"
-                  : "Sofa and sectional care with public menu prices"}
+                  : "Sofa and sectional care with clear menu prices"}
               </li>
               <li>
                 {locale === "es"
@@ -870,8 +916,8 @@ export function CityPage({
             </h3>
             <p>
               {locale === "es"
-                ? `Sin mínimo en zona principal para sofá, seccional o colchón. Mínimo de zona extendida: $${minimums.extended}.`
-                : `No core-zone minimum for sofa, sectional or mattress. Extended-zone minimum $${minimums.extended}.`}
+                ? `Sin mínimo en zona principal para sofá, seccional o colchón. Mínimo de zona extendida: $${siteConfig.conversion.extendedMinimum}.`
+                : `No core-zone minimum for sofa, sectional or mattress. Extended-zone minimum $${siteConfig.conversion.extendedMinimum}.`}
             </p>
             <Link
               className="button button--ink"
@@ -1139,111 +1185,6 @@ export function FAQPage({ locale = defaultLocale }: { locale?: Locale }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
-    </SiteShell>
-  );
-}
-
-export function MethodologyPage({
-  locale = defaultLocale,
-}: {
-  locale?: Locale;
-}) {
-  return (
-    <SiteShell locale={locale}>
-      <PageHero
-        locale={locale}
-        eyebrow={
-          locale === "es" ? "Transparencia de precios" : "Pricing transparency"
-        }
-        title={
-          locale === "es"
-            ? "Cómo igualamos referencias públicas."
-            : "How public-rate matching works."
-        }
-        dek={
-          locale === "es"
-            ? "Una referencia local documentada y con alcance comparable, no un precio anterior inventado."
-            : "A documented local benchmark with comparable scope—not an invented former price."
-        }
-      />
-      <section className="section section--ivory">
-        <div className="shell content-layout">
-          <article className="content-prose">
-            <h2>{locale === "es" ? "La regla" : "The rule"}</h2>
-            <p>
-              {locale === "es"
-                ? "Para cada línea, Novaclean usa un precio u oferta pública local con alcance identificable. El precio de Novaclean iguala esa referencia para el mismo alcance; no se muestra como descuento ni como precio anterior."
-                : "For each line item, Novaclean uses a publicly visible local price or offer with identifiable scope. The Novaclean price matches that benchmark for the same scope; it is not presented as a discount or a former price."}
-            </p>
-            <h2>
-              {locale === "es" ? "Registro necesario" : "Required record"}
-            </h2>
-            <ul>
-              <li>
-                {locale === "es"
-                  ? "Nombre del publicador y URL pública"
-                  : "Publisher name and public URL"}
-              </li>
-              <li>
-                {locale === "es"
-                  ? "Precio observado y alcance exacto"
-                  : "Observed price and exact service scope"}
-              </li>
-              <li>
-                {locale === "es"
-                  ? "Fecha de consulta y geografía"
-                  : "Checked date and market geography"}
-              </li>
-              <li>
-                {locale === "es"
-                  ? "Alcance equivalente de Novaclean"
-                  : "Novaclean matched scope"}
-              </li>
-              <li>
-                {locale === "es"
-                  ? "Fecha de revisión si cambia la fuente"
-                  : "Review date if the source changes"}
-              </li>
-            </ul>
-            <h2>
-              {locale === "es" ? "Lo que no afirmamos" : "What we do not claim"}
-            </h2>
-            <p>
-              {locale === "es"
-                ? "No afirmamos que todos los limpiadores de Orange County cobren lo mismo. La referencia es un punto público local que debe mantenerse vigente y comparable."
-                : "We do not claim every Orange County cleaner charges the same amount. The benchmark is a local public reference that must remain current and like-for-like."}
-            </p>
-            <h2>
-              {locale === "es"
-                ? "Presentación al cliente"
-                : "Customer-facing display"}
-            </h2>
-            <p>
-              {locale === "es"
-                ? "Precio, unidad, alcance, fuente y mes de consulta aparecen juntos. Los mismos registros alimentan inicio, tabla, servicios y calculadora."
-                : "Price, unit, scope, source and checked month appear together. The same central records power the home page, table, service pages and estimator."}
-            </p>
-          </article>
-          <aside className="content-aside" role="note">
-            <p className="eyebrow">
-              {locale === "es" ? "Consultado" : "Checked"}
-            </p>
-            <h3>{compareDate}</h3>
-            <p>
-              {prices.length}{" "}
-              {locale === "es"
-                ? "líneas de precio y paquetes en la matriz pública."
-                : "public price lines and bundle records in the matrix."}
-            </p>
-            <Link
-              className="button button--ink"
-              href={localizedPath(locale, "/pricing")}
-            >
-              {locale === "es" ? "Ver precios ↗" : "View prices ↗"}
-            </Link>
-          </aside>
-        </div>
-      </section>
     </SiteShell>
   );
 }

@@ -7,7 +7,7 @@ Read the honest release verdict and remaining launch blockers in [`NOVACLEAN_COM
 ## Implemented
 
 - Conversion-led multi-route Next.js site for residential, commercial, service-area, fabric, guide, customer-care, and legal journeys.
-- 22 source-backed prices/bundles matched to documented public benchmarks, with scope, source, and checked month.
+- 22 customer-facing menu prices and bundles with clear scope, centrally editable from the owner dashboard.
 - Six-step menu estimate/request flow with explicit ZIP coverage, optional photo review, non-live preferred windows, consent, and server-confirmed reference.
 - Server-side price recalculation and validation; the browser cannot submit its own total.
 - Seven-day non-contact browser draft. Name, email, phone, address, notes, access details, consent, and files are never stored in that draft.

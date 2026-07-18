@@ -22,7 +22,7 @@ test("server-renders the conversion homepage", async () => {
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
-  assert.match(html, /Clean fabric[\s\S]*Clear price\./);
+  assert.match(html, /Orange County upholstery cleaning[\s\S]*Clear price\./);
   assert.match(html, /Orange County/);
   assert.match(html, /\$99/);
   assert.match(html, /Build my estimate/i);
@@ -37,7 +37,7 @@ test("server-renders the conversion homepage", async () => {
   );
 });
 
-test("pricing and service pages use matched public benchmark language without discount theater", async () => {
+test("pricing and service pages show Novaclean scope without internal price research", async () => {
   const [pricing, service] = await Promise.all([
     render("/pricing"),
     render("/services/sofa-couch-cleaning"),
@@ -46,12 +46,17 @@ test("pricing and service pages use matched public benchmark language without di
   assert.equal(service.status, 200);
   const pricingHtml = await pricing.text();
   const serviceHtml = await service.text();
-  assert.match(pricingHtml, /Published benchmark/i);
-  assert.doesNotMatch(pricingHtml, /30%|strike-through/i);
+  assert.match(pricingHtml, /What is included/i);
   assert.match(pricingHtml, /\$99/);
-  assert.match(pricingHtml, /Public-rate match/i);
+  assert.match(pricingHtml, /Menu price/i);
   assert.match(serviceHtml, /Sofa &amp; couch cleaning/);
   assert.match(serviceHtml, /application\/ld\+json/);
+  for (const html of [pricingHtml, serviceHtml]) {
+    assert.doesNotMatch(
+      html,
+      /benchmark|competitor|public-rate|price comparison methodology|Key Pit Klean|PR Cleaning|Barefoot Clean/i,
+    );
+  }
 });
 
 test("quote route exposes the first accessible step", async () => {
@@ -74,7 +79,7 @@ test("portal and admin routes are private, useful and server-rendered", async ()
   const adminHtml = await admin.text();
   assert.match(portalHtml, /One reference\. Every next step\./);
   assert.match(portalHtml, /noindex/i);
-  assert.match(adminHtml, /Novaclean control room/);
+  assert.match(adminHtml, /Novaclean admin/);
   assert.match(adminHtml, /noindex/i);
 });
 
@@ -113,23 +118,28 @@ test("project includes storage, migrations, favicon, OG and only two verify labe
   ]);
 });
 
-test("every canonical price matches its public benchmark and names a source", async () => {
+test("every canonical price has a customer-facing amount and scope", async () => {
   const data = await readFile(
     new URL("../lib/site-data.ts", import.meta.url),
     "utf8",
   );
-  const rows = [
-    ...data.matchAll(
-      /\{\s*id:[\s\S]*?benchmark:\s*([\d.]+),[\s\S]*?price:\s*([\d.]+),[\s\S]*?source:\s*"([^"]+)"[\s\S]*?\},/g,
-    ),
-  ];
+  const rows = [...data.matchAll(/\{\s*id:\s*"([^"]+)",[\s\S]*?price:\s*([\d.]+),[\s\S]*?scope:\s*"([^"]+)"[\s\S]*?\},/g)];
   assert.equal(rows.length, 22);
-  for (const [, benchmarkText, priceText, source] of rows) {
-    const benchmark = Number(benchmarkText);
+  for (const [, id, priceText, scope] of rows) {
     const price = Number(priceText);
-    assert.equal(price, benchmark, `${source}: ${benchmark} should be matched`);
-    assert.ok(source.length > 0);
+    assert.ok(price >= 0, `${id} must have a non-negative price`);
+    assert.ok(scope.length > 4, `${id} must explain what is included`);
   }
+  assert.doesNotMatch(data, /benchmark|priceSources|getPriceSource/);
+});
+
+test("retired pricing-method route redirects to the customer price menu", async () => {
+  const response = await render("/price-comparison-methodology");
+  assert.ok([307, 308].includes(response.status));
+  assert.equal(
+    new URL(response.headers.get("location"), "http://localhost").pathname,
+    "/pricing",
+  );
 });
 
 test("legal center renders current, source-backed privacy and claims records", async () => {
@@ -158,8 +168,9 @@ test("sitemap excludes conversion, private, and proof-pending routes", async () 
   assert.equal(response.status, 200);
   const xml = await response.text();
   assert.doesNotMatch(xml, /\/get-quote|\/book|\/results|\/reviews|\/team/);
-  assert.match(xml, /\/privacy/);
-  assert.match(xml, /\/claims-damage/);
+  assert.match(xml, /\/pricing/);
+  assert.match(xml, /\/services\/sofa-couch-cleaning/);
+  assert.doesNotMatch(xml, /\/privacy|\/claims-damage/);
 });
 
 test("quote implementation never fabricates a local submission reference and recalculates on the server", async () => {
@@ -189,7 +200,10 @@ test("Spanish routes share one locale architecture and declare their language", 
   ]);
   assert.equal(home.status, 200);
   assert.equal(quote.status, 200);
-  assert.match(await home.text(), /lang="es"[\s\S]*Textiles limpios/);
+  assert.match(
+    await home.text(),
+    /lang="es"[\s\S]*Limpieza de tapicería en Orange County/,
+  );
   assert.match(await quote.text(), /lang="es"[\s\S]*¿A dónde vamos\?/);
   assert.ok([307, 308].includes(legal.status));
   assert.equal(

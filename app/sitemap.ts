@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
 import { servicePages } from "@/lib/site-data";
-import { legalPaths } from "@/lib/legal-content";
 import { siteUrl } from "@/lib/site-url";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -19,8 +18,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/commercial",
     "/prepare",
     "/aftercare",
-    "/price-comparison-methodology",
-    ...legalPaths.map((path) => `/${path}`),
   ];
   const serviceRoutes = servicePages.map(
     (service) => `/services/${service.slug}`,
@@ -34,11 +31,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/contact",
     "/faq",
     "/services",
-    "/price-comparison-methodology",
     ...serviceRoutes,
   ].map((path) => `/es${path}`);
   return [...staticRoutes, ...serviceRoutes, ...spanishCore].map((path) => ({
     url: `${base}${path}`,
+    lastModified: new Date("2026-07-18T00:00:00.000Z"),
     changeFrequency: "weekly",
     priority:
       path === "" || path === "/es" ? 1 : path.endsWith("/pricing") ? 0.9 : 0.7,

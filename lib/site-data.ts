@@ -8,249 +8,190 @@ export type PriceItem = {
   id: string;
   label: string;
   shortLabel: string;
-  benchmark: number;
   price: number;
   unit?: string;
   scope: string;
   category: "upholstery" | "mattress" | "rug" | "carpet" | "addon" | "bundle";
-  source: keyof typeof priceSources;
 };
-
-export const priceSources = {
-  keypit: { name: "Key Pit Klean", url: "https://keypitklean.com/" },
-  pr: { name: "PR Cleaning", url: "https://www.theprcleaning.com/" },
-  barefoot: {
-    name: "Barefoot Clean",
-    url: "https://carpetcleaneroc.com/furniture-and-upholstery-cleaning-huntington-beach-california/",
-  },
-  combined: {
-    name: "Matched public item sum",
-    url: "/price-comparison-methodology",
-  },
-} as const;
 
 export const prices: PriceItem[] = [
   {
     id: "loveseat",
     label: "Loveseat / 2-seat sofa",
     shortLabel: "Loveseat",
-    benchmark: 79,
     price: 79,
     scope: "standard fabric, up to 2 seats",
     category: "upholstery",
-    source: "keypit",
   },
   {
     id: "sofa",
     label: "3-seat sofa",
     shortLabel: "3-seat sofa",
-    benchmark: 99,
     price: 99,
     scope: "standard fabric, three seat cushions",
     category: "upholstery",
-    source: "keypit",
   },
   {
     id: "l-sectional",
     label: "L-shape sectional",
     shortLabel: "L sectional",
-    benchmark: 169,
     price: 169,
     scope: "up to 5 seating sections",
     category: "upholstery",
-    source: "pr",
   },
   {
     id: "u-sectional",
     label: "U-shape sectional",
     shortLabel: "U sectional",
-    benchmark: 219,
     price: 219,
     scope: "up to 7 seating sections",
     category: "upholstery",
-    source: "pr",
   },
   {
     id: "side-chair",
     label: "Accent chair / recliner",
     shortLabel: "Chair",
-    benchmark: 45,
     price: 45,
     scope: "one standard chair",
     category: "upholstery",
-    source: "barefoot",
   },
   {
     id: "dining-chair",
     label: "Dining chair",
     shortLabel: "Dining chair",
-    benchmark: 10,
     price: 10,
     scope: "seat only; four-chair minimum or add-on",
     category: "upholstery",
-    source: "barefoot",
   },
   {
     id: "mattress",
     label: "Mattress cleaning",
     shortLabel: "Mattress",
-    benchmark: 79,
     price: 79,
     scope: "starting price, Twin to King; condition can change scope",
     category: "mattress",
-    source: "pr",
   },
   {
     id: "rug",
     label: "Area rug cleaning",
     shortLabel: "Area rug",
-    benchmark: 59,
     price: 59,
     scope: "starting price; final scope depends on size and material",
     category: "rug",
-    source: "pr",
   },
   {
     id: "rug-sqft",
     label: "Area rug by square foot",
     shortLabel: "Rug / sq ft",
-    benchmark: 1.5,
     price: 1.5,
     unit: "/ sq ft",
     scope: "eligible in-home rugs",
     category: "rug",
-    source: "keypit",
   },
   {
     id: "stain",
     label: "Targeted stain treatment",
     shortLabel: "Stain treatment",
-    benchmark: 39,
     price: 39,
     scope: "per affected area; outcome not guaranteed",
     category: "addon",
-    source: "pr",
   },
   {
     id: "pet",
     label: "Pet enzyme treatment",
     shortLabel: "Pet treatment",
-    benchmark: 40,
     price: 40,
     scope: "surface contamination area",
     category: "addon",
-    source: "keypit",
   },
   {
     id: "protector",
     label: "Carpet protector",
     shortLabel: "Protector / room",
-    benchmark: 35,
     price: 35,
     scope: "per eligible carpeted room; upholstery coverage requires review",
     category: "addon",
-    source: "keypit",
   },
   {
     id: "carpet-room",
     label: "Carpet — one room",
     shortLabel: "1 carpet room",
-    benchmark: 89,
     price: 89,
     scope: "up to 200 sq ft",
     category: "carpet",
-    source: "keypit",
   },
   {
     id: "carpet-3",
     label: "Carpet — three rooms",
     shortLabel: "3 carpet rooms",
-    benchmark: 140,
     price: 140,
     scope: "up to 600 sq ft total",
     category: "carpet",
-    source: "keypit",
   },
   {
     id: "carpet-home",
     label: "Carpet — whole home",
     shortLabel: "Whole home",
-    benchmark: 199,
     price: 199,
     scope: "up to 1,500 cleanable sq ft",
     category: "carpet",
-    source: "keypit",
   },
   {
     id: "stairs",
     label: "Carpeted stairs",
     shortLabel: "Stair",
-    benchmark: 3,
     price: 3,
     unit: "/ step",
     scope: "per standard stair, tread and riser definition confirmed",
     category: "carpet",
-    source: "keypit",
   },
   {
     id: "hallway",
     label: "Carpeted hallway",
     shortLabel: "Hallway",
-    benchmark: 25,
     price: 25,
     scope: "one standard-length hallway",
     category: "carpet",
-    source: "keypit",
   },
   {
     id: "living-room-reset",
     label: "Living Room Pair",
     shortLabel: "Living Room Pair",
-    benchmark: 178,
     price: 178,
     scope: "3-seat sofa + loveseat",
     category: "bundle",
-    source: "combined",
   },
   {
     id: "sectional-pet",
     label: "Sectional Plus",
     shortLabel: "Sectional Plus",
-    benchmark: 214,
     price: 214,
     scope: "L sectional + standard side chair",
     category: "bundle",
-    source: "combined",
   },
   {
     id: "sleep-reset",
     label: "Sleep Reset for Two",
     shortLabel: "Sleep Reset for Two",
-    benchmark: 158,
     price: 158,
     scope: "two standard mattresses",
     category: "bundle",
-    source: "combined",
   },
   {
     id: "move-reset",
     label: "Pet Sofa Rescue",
     shortLabel: "Pet Sofa Rescue",
-    benchmark: 139,
     price: 139,
     scope: "3-seat sofa + surface pet treatment",
     category: "bundle",
-    source: "combined",
   },
   {
     id: "whole-home",
     label: "Move-in Textile Starter",
     shortLabel: "Move-in Starter",
-    benchmark: 239,
     price: 239,
     scope: "3 carpet rooms + 3-seat sofa",
     category: "bundle",
-    source: "combined",
   },
 ];
 
@@ -499,8 +440,6 @@ export const nav = [
   ["About", "/about"],
 ] as const;
 
-export const compareDate = "July 2026";
-
 export const quoteItemIds = [
   "loveseat",
   "sofa",
@@ -629,37 +568,43 @@ export function calculateEstimate(input: {
   quantity: number;
   stain: boolean;
   pet: boolean;
+  priceOverrides?: Record<string, number>;
+  extendedMinimum?: number;
 }) {
-  const item = prices.find(
+  const baseItem = prices.find(
     (candidate) =>
       candidate.id === input.itemId &&
       quoteItemIds.includes(candidate.id as (typeof quoteItemIds)[number]),
   );
   const zone = serviceZone(input.zip);
-  if (!item || zone === "out") return null;
+  if (!baseItem || zone === "out") return null;
+  const item = {
+    ...baseItem,
+    price: input.priceOverrides?.[baseItem.id] ?? baseItem.price,
+  };
   const quantity =
     item.id === "dining-chair"
       ? Math.min(24, Math.max(4, Math.trunc(input.quantity) || 4))
       : 1;
   const additions =
-    (input.stain ? getPrice("stain").price : 0) +
-    (input.pet ? getPrice("pet").price : 0);
-  const minimum = zone === "core" ? minimums.core : minimums.extended;
+    (input.stain
+      ? (input.priceOverrides?.stain ?? getPrice("stain").price)
+      : 0) +
+    (input.pet ? (input.priceOverrides?.pet ?? getPrice("pet").price) : 0);
+  const minimum =
+    zone === "core"
+      ? minimums.core
+      : (input.extendedMinimum ?? minimums.extended);
   return {
     item,
     quantity,
     zone,
     total: Math.max(item.price * quantity + additions, minimum),
-    benchmark: Math.max(item.price * quantity + additions, minimum),
   };
 }
 
 export function getPrice(id: string) {
   return prices.find((item) => item.id === id) ?? prices[1];
-}
-
-export function getPriceSource(item: PriceItem) {
-  return priceSources[item.source];
 }
 
 export function money(value: number) {

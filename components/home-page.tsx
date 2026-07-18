@@ -1,3 +1,4 @@
+"use client";
 /* eslint-disable @next/next/no-img-element -- local pre-cropped WebP assets avoid runtime image transformations */
 import Link from "next/link";
 import { PricePulse, Reveal } from "@/components/motion";
@@ -14,6 +15,7 @@ import {
 } from "@/components/ui";
 import { SiteShell } from "@/components/site-shell";
 import { QuoteResume } from "@/components/quote-resume";
+import { useSiteConfig } from "@/components/site-config-provider";
 import {
   defaultLocale,
   homeMessages,
@@ -37,6 +39,12 @@ export function HomePageContent({
   locale?: Locale;
 }) {
   const copy = homeMessages[locale];
+  const config = useSiteConfig();
+  const heroEyebrow =
+    locale === "es" ? config.home.eyebrowEs : config.home.eyebrowEn;
+  const heroTitle = locale === "es" ? config.home.titleEs : config.home.titleEn;
+  const heroDek =
+    locale === "es" ? config.home.descriptionEs : config.home.descriptionEn;
   return (
     <SiteShell locale={locale}>
       <section className="hero">
@@ -53,11 +61,11 @@ export function HomePageContent({
         <div className="hero__veil" />
         <div className="shell hero__inner">
           <div className="hero__copy">
-            <p className="eyebrow eyebrow--light">{copy.heroEyebrow}</p>
+            <p className="eyebrow eyebrow--light">{heroEyebrow}</p>
             <h1>
-              <SplitTitle text={copy.heroTitle} />
+              <SplitTitle text={heroTitle} />
             </h1>
-            <p className="hero__dek">{copy.heroDek}</p>
+            <p className="hero__dek">{heroDek}</p>
             <div className="hero__price">
               <PricePulse>{copy.heroPrice}</PricePulse>
               <Price id="sofa" compact locale={locale} />

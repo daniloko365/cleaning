@@ -170,9 +170,9 @@ export const legalDocuments: Record<string, LegalDocument> = {
         ],
       },
       {
-        title: "2. Estimates and public benchmarks",
+        title: "2. Estimates and service scope",
         body: [
-          "An online estimate depends on the selected item, quantity, service ZIP, and approved add-ons. Photos, material, condition, and access facts are reviewed to confirm eligibility and scope before work. Published benchmark values identify local public prices for comparable scope; they are not a claim about every competitor. The methodology page identifies the source and checked date. Taxes, parking, specialty handling, or other charges must be disclosed before approval if they apply.",
+          "An online estimate depends on the selected item, quantity, service ZIP, and approved add-ons. Photos, material, condition, and access facts are reviewed to confirm eligibility and scope before work. Taxes, parking, specialty handling, or other charges must be disclosed before approval if they apply.",
         ],
       },
       {

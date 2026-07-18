@@ -13,7 +13,6 @@ import {
   HowItWorksPage,
   LaunchChecklistPage,
   LegalDocumentPage,
-  MethodologyPage,
   PortalPage,
   PricingPage,
   ResultsPage,
@@ -28,6 +27,7 @@ import { QuoteWizard } from "@/components/quote-wizard";
 import { legalDocuments } from "@/lib/legal-content";
 import { cities, cityName, guides, servicePages } from "@/lib/site-data";
 import { genericPageMessages, localizedPath, routeLocale } from "@/lib/i18n";
+import { loadSiteConfig } from "@/lib/site-settings.server";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
@@ -151,7 +151,7 @@ const copy: Record<
       },
       {
         title: "What is forbidden",
-        body: "Unlabeled demos, borrowed competitor work, AI-generated ‘results’, exaggerated color shifts, missing limitations and customer-identifying details without permission.",
+        body: "Unlabeled demos, borrowed work, AI-generated ‘results’, exaggerated color shifts, missing limitations and customer-identifying details without permission.",
       },
     ],
   },
@@ -558,6 +558,7 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const { locale, route, path } = routeLocale(slug);
+  const siteConfig = await loadSiteConfig();
   const canonical = localizedPath(locale, path ? `/${path}` : "/");
   const languagePath = path ? `/${path}` : "/";
   const alternates = {
@@ -565,6 +566,7 @@ export async function generateMetadata({
     languages: {
       "en-US": localizedPath("en", languagePath),
       "es-US": localizedPath("es", languagePath),
+      "x-default": localizedPath("en", languagePath),
     },
   };
   const privateRoute =
@@ -606,9 +608,21 @@ export async function generateMetadata({
     const page = servicePages.find((item) => item.slug === route[1]);
     if (page)
       return {
-        title: page.name,
-        description: `${page.name} pricing and scope across Orange County.`,
+        title:
+          locale === "es"
+            ? `${page.name} en Orange County, CA`
+            : `${page.name} Orange County, CA`,
+        description:
+          locale === "es"
+            ? `${page.name} móvil en Orange County con precios claros, revisión del tejido y cálculo con fotos antes del servicio.`
+            : `Professional ${page.name.toLowerCase()} across Orange County. See clear pricing, fabric-first scope and request a photo-reviewed estimate online.`,
         alternates,
+        openGraph: {
+          title: `${page.name} — Orange County | Novaclean`,
+          description: page.problem,
+          url: canonical,
+          images: [{ url: page.image, alt: `${page.name} in Orange County` }],
+        },
       };
   }
   if (route[0] === "guides" && route[1]) {
@@ -651,6 +665,61 @@ export async function generateMetadata({
       description: legalDocuments[path].summary,
       alternates,
     };
+  const seoRoutes: Record<string, { en: [string, string]; es: [string, string] }> = {
+    pricing: {
+      en: [
+        "Upholstery Cleaning Prices Orange County, CA",
+        "See Novaclean prices for sofas, sectionals, mattresses, rugs, carpet cleaning and add-ons before requesting service in Orange County.",
+      ],
+      es: [
+        "Precios de limpieza de tapicería en Orange County",
+        "Consulta precios para sofás, seccionales, colchones, alfombras, moquetas y extras antes de solicitar servicio en Orange County.",
+      ],
+    },
+    services: {
+      en: [
+        "Upholstery & Textile Cleaning Services Orange County",
+        "Explore sofa, sectional, chair, mattress, rug, carpet, pet odor and stain cleaning services across Orange County, California.",
+      ],
+      es: [
+        "Servicios de limpieza de tapicería en Orange County",
+        "Servicios móviles para sofás, seccionales, sillas, colchones, alfombras, moquetas, olores de mascotas y manchas en Orange County.",
+      ],
+    },
+    "service-area": {
+      en: [
+        "Orange County Upholstery Cleaning Service Area",
+        "Check Novaclean mobile upholstery and textile cleaning coverage by ZIP across Irvine, Costa Mesa, Newport Beach and Orange County.",
+      ],
+      es: [
+        "Área de servicio de tapicería en Orange County",
+        "Comprueba por ZIP la cobertura móvil de limpieza de tapicería y textiles en Irvine, Costa Mesa, Newport Beach y Orange County.",
+      ],
+    },
+    faq: {
+      en: [
+        "Upholstery Cleaning FAQ — Prices, Drying & Fabric Care",
+        "Answers about upholstery cleaning prices, drying time, stains, pet odor, fabric codes, service minimums and aftercare in Orange County.",
+      ],
+      es: [
+        "Preguntas de limpieza de tapicería: precios y secado",
+        "Respuestas sobre precios, tiempo de secado, manchas, olor de mascotas, códigos de tejido, mínimos y cuidados en Orange County.",
+      ],
+    },
+  };
+  const seoRoute = seoRoutes[path]?.[locale];
+  if (seoRoute)
+    return {
+      title: seoRoute[0],
+      description: seoRoute[1],
+      alternates,
+      openGraph: {
+        title: `${seoRoute[0]} | Novaclean`,
+        description: seoRoute[1],
+        url: canonical,
+        locale: locale === "es" ? "es_US" : "en_US",
+      },
+    };
   if (copy[path])
     return {
       title: copy[path].title,
@@ -668,7 +737,6 @@ export async function generateMetadata({
     "orange-county": "Orange County Service Area",
     guides: "Guides",
     faq: "Frequently Asked Questions",
-    "price-comparison-methodology": "Price Comparison Methodology",
     "launch-checklist": "Launch Verification",
     portal: "Customer Portal",
     fabrics: "Fabric Care Library",
@@ -676,12 +744,30 @@ export async function generateMetadata({
   const title =
     path === ""
       ? locale === "es"
-        ? "Limpieza de tapicería y textiles en Orange County"
-        : "Novaclean"
+        ? siteConfig.seo.homeTitleEs
+        : siteConfig.seo.homeTitleEn
       : routeTitles[path] || "Novaclean";
   return {
     title,
+    description:
+      path === ""
+        ? locale === "es"
+          ? siteConfig.seo.homeDescriptionEs
+          : siteConfig.seo.homeDescriptionEn
+        : siteConfig.seo.defaultDescription,
     alternates,
+    openGraph:
+      path === ""
+        ? {
+            title: `${title} | Novaclean`,
+            description:
+              locale === "es"
+                ? siteConfig.seo.homeDescriptionEs
+                : siteConfig.seo.homeDescriptionEn,
+            url: canonical,
+            locale: locale === "es" ? "es_US" : "en_US",
+          }
+        : undefined,
     robots:
       privateRoute || proofPending ? { index: false, follow: true } : undefined,
   };
@@ -694,6 +780,7 @@ export default async function CatchAllPage({
   const { slug } = await params;
   const { locale, route, path } = routeLocale(slug);
   const query = searchParams ? await searchParams : {};
+  const siteConfig = await loadSiteConfig();
   if (!path) return <HomePageContent locale={locale} />;
   if (path === "get-quote" || path === "book")
     return (
@@ -704,14 +791,21 @@ export default async function CatchAllPage({
         bookingMode={path === "book"}
       />
     );
-  if (path === "pricing") return <PricingPage locale={locale} />;
+  if (path === "pricing")
+    return <PricingPage locale={locale} siteConfig={siteConfig} />;
   if (path === "services") return <ServicesHub locale={locale} />;
   if (
     route[0] === "services" &&
     route[1] &&
     servicePages.some((item) => item.slug === route[1])
   )
-    return <ServicePage slug={route[1]} locale={locale} />;
+    return (
+      <ServicePage
+        slug={route[1]}
+        locale={locale}
+        siteConfig={siteConfig}
+      />
+    );
   if (path === "service-area" || path === "orange-county")
     return <ServiceAreaPage locale={locale} />;
   if (
@@ -719,7 +813,9 @@ export default async function CatchAllPage({
     route[1] &&
     cities.includes(route[1] as (typeof cities)[number])
   )
-    return <CityPage slug={route[1]} locale={locale} />;
+    return (
+      <CityPage slug={route[1]} locale={locale} siteConfig={siteConfig} />
+    );
   if (path === "guides") return <GuidesHub />;
   if (
     route[0] === "guides" &&
@@ -729,7 +825,7 @@ export default async function CatchAllPage({
     return <GuidePage slug={route[1]} />;
   if (path === "faq") return <FAQPage locale={locale} />;
   if (path === "price-comparison-methodology")
-    return <MethodologyPage locale={locale} />;
+    redirect(localizedPath(locale, "/pricing"));
   if (path === "how-it-works") return <HowItWorksPage locale={locale} />;
   if (path === "about") return <AboutPage locale={locale} />;
   if (path === "results") return <ResultsPage locale={locale} />;

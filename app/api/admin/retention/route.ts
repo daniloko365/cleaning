@@ -4,7 +4,7 @@ import { runRetention } from "@/lib/retention";
 
 export async function POST(request: Request) {
   try {
-    if (!(await hasAdminAccess(request))) return json({ error: "Not found" }, { status: 404 });
+    if (!(await hasAdminAccess(request))) return json({ error: "Authentication required." }, { status: 401 });
     const { env } = await import("cloudflare:workers");
     const result = await runRetention(env as never);
     return json({ status: "completed", ...result });
@@ -12,4 +12,3 @@ export async function POST(request: Request) {
     return json({ error: "Retention cleanup could not complete." }, { status: 503 });
   }
 }
-

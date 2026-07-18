@@ -13,7 +13,7 @@ import { hasAdminAccess } from "@/lib/admin-auth";
 export async function GET(request: Request) {
   try {
     if (!(await hasAdminAccess(request)))
-      return Response.json({ error: "Not found" }, { status: 404 });
+      return Response.json({ error: "Authentication required." }, { status: 401 });
     const db = await getDb();
     const [
       quoteRows,
@@ -166,10 +166,10 @@ export async function GET(request: Request) {
               "No payment is collected in the launch flow, so payment failures and estimate-vs-final variance are not fabricated.",
           },
           {
-            label: "Price source expiry",
-            state: "manual gate",
+            label: "Price and scope review",
+            state: "owner-managed",
             detail:
-              "All public benchmarks show source and checked month; operations owns refresh/expiry.",
+              "Public menu prices and inclusions are editable in the owner dashboard and should be reviewed before promotions or scope changes.",
           },
           {
             label: "Abandoned requests",

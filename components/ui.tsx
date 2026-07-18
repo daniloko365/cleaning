@@ -1,15 +1,18 @@
+"use client";
 /* eslint-disable @next/next/no-img-element -- these local WebP derivatives are already resized and compressed */
 import Link from "next/link";
 import {
-  compareDate,
   faq,
   getPrice,
-  getPriceSource,
   money,
   prices,
   servicePages,
 } from "@/lib/site-data";
 import { Reveal, TiltCard } from "@/components/motion";
+import {
+  configuredPrice,
+  useSiteConfig,
+} from "@/components/site-config-provider";
 import {
   defaultLocale,
   faqMessages,
@@ -56,8 +59,12 @@ export function Price({
   locale?: Locale;
 }) {
   const baseItem = getPrice(id);
-  const item = translatedPrice(baseItem, locale);
-  const source = getPriceSource(baseItem);
+  const config = useSiteConfig();
+  const item = configuredPrice(
+    translatedPrice(baseItem, locale),
+    locale,
+    config,
+  );
   const copy = messages[locale].common;
   return (
     <div className={`price-lockup ${compact ? "price-lockup--compact" : ""}`}>
@@ -70,15 +77,7 @@ export function Price({
       </strong>
       {showEvidence && (
         <small className="price-lockup__evidence">
-          {copy.scope}: {item.scope} · {copy.source}:{" "}
-          <a
-            href={source.url}
-            target={source.url.startsWith("http") ? "_blank" : undefined}
-            rel={source.url.startsWith("http") ? "noreferrer" : undefined}
-          >
-            {source.name}
-          </a>{" "}
-          · {copy.checked} {compareDate}
+          {copy.scope}: {item.scope}
         </small>
       )}
     </div>
@@ -95,29 +94,27 @@ export function PriceCard({
   locale?: Locale;
 }) {
   const baseItem = getPrice(id);
-  const item = translatedPrice(baseItem, locale);
-  const source = getPriceSource(baseItem);
+  const config = useSiteConfig();
+  const item = configuredPrice(
+    translatedPrice(baseItem, locale),
+    locale,
+    config,
+  );
   const copy = messages[locale].common;
   return (
     <Reveal delay={index * 70}>
       <TiltCard className="price-card">
         <div className="price-card__top">
           <span>{item.shortLabel}</span>
-          <b>{copy.matchedRate}</b>
+          <b>{locale === "es" ? "Precio de menú" : "Menu price"}</b>
         </div>
         <Price id={id} showEvidence={false} locale={locale} />
         <p>{item.scope}</p>
         <div className="price-card__foot">
           <small>
-            {copy.publicBenchmark}:{" "}
-            <a
-              href={source.url}
-              target={source.url.startsWith("http") ? "_blank" : undefined}
-              rel={source.url.startsWith("http") ? "noreferrer" : undefined}
-            >
-              {source.name}
-            </a>{" "}
-            · {copy.checked} {compareDate}
+            {locale === "es"
+              ? "Alcance revisado con fotos antes del servicio"
+              : "Scope reviewed from photos before service"}
           </small>
           <Link href={`${localizedPath(locale, "/pricing")}#${id}`}>
             {copy.details}
@@ -355,10 +352,10 @@ export function PricingTable({
   category?: string;
   locale?: Locale;
 }) {
+  const config = useSiteConfig();
   const items = category
     ? prices.filter((item) => item.category === category)
     : prices;
-  const common = messages[locale].common;
   return (
     <div className="pricing-table">
       <div className="pricing-table__head">
@@ -367,11 +364,15 @@ export function PricingTable({
         </span>
         <span>{locale === "es" ? "Precio Novaclean" : "Novaclean price"}</span>
         <span>
-          {locale === "es" ? "Alcance y referencia" : "Scope and benchmark"}
+          {locale === "es" ? "Qué incluye" : "What is included"}
         </span>
       </div>
       {items.map((baseItem) => {
-        const item = translatedPrice(baseItem, locale);
+        const item = configuredPrice(
+          translatedPrice(baseItem, locale),
+          locale,
+          config,
+        );
         return (
           <div className="pricing-table__row" id={item.id} key={item.id}>
             <strong>{item.label}</strong>
@@ -381,26 +382,6 @@ export function PricingTable({
             </b>
             <p>
               {item.scope}
-              <small>
-                {common.publicBenchmark}: {money(item.benchmark)}
-                {item.unit} · {common.source}:{" "}
-                <a
-                  href={getPriceSource(baseItem).url}
-                  target={
-                    getPriceSource(baseItem).url.startsWith("http")
-                      ? "_blank"
-                      : undefined
-                  }
-                  rel={
-                    getPriceSource(baseItem).url.startsWith("http")
-                      ? "noreferrer"
-                      : undefined
-                  }
-                >
-                  {getPriceSource(baseItem).name}
-                </a>{" "}
-                · {common.checked} {compareDate}
-              </small>
             </p>
           </div>
         );
@@ -419,12 +400,12 @@ export function VerifyBlock({ legal = false }: { legal?: boolean }) {
       <div>
         <h3>
           {legal
-            ? "Comparison-price review"
+            ? "Pricing-language review"
             : "Business facts and integrations"}
         </h3>
         <p>
           {legal
-            ? "Confirm that every published benchmark remains current, representative and documented before public advertising; retain source URL, service scope and check date."
+            ? "Confirm that menu prices, inclusions, exclusions and approval language remain accurate before public advertising."
             : "Add the real business phone, text line, operator names/portraits, insurance details, verified review links and any SMS/payment keys. Until then, contact CTAs safely lead to the working photo-quote flow."}
         </p>
       </div>

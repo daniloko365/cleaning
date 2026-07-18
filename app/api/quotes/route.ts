@@ -3,6 +3,8 @@ import { quotes } from "@/db/schema";
 import { clean, json, readJson, validEmail } from "@/lib/http";
 import { LEGAL_VERSION } from "@/lib/legal-content";
 import { calculateEstimate } from "@/lib/site-data";
+import { priceValues } from "@/lib/site-config";
+import { loadSiteConfig } from "@/lib/site-settings.server";
 
 type QuotePayload = {
   zip?: string;
@@ -38,12 +40,17 @@ export async function POST(request: Request) {
     const phone = clean(body.phone, 40);
     const name = clean(body.name, 120);
     const address = clean(body.address, 300);
+    const config = await loadSiteConfig();
+    if (!config.conversion.bookingEnabled)
+      return json({ error: "Online requests are temporarily paused." }, { status: 503 });
     const estimate = calculateEstimate({
       zip,
       itemId: clean(body.itemId, 80),
       quantity: Number(body.quantity),
       stain: body.stain === true,
       pet: body.pet === true,
+      priceOverrides: priceValues(config),
+      extendedMinimum: config.conversion.extendedMinimum,
     });
     const fabric = clean(body.fabric, 80);
     const condition = clean(body.condition, 80);
@@ -98,7 +105,7 @@ export async function POST(request: Request) {
             )
         : [],
       estimateTotal: estimate.total,
-      comparisonTotal: estimate.benchmark,
+      comparisonTotal: estimate.total,
       requestedSlot: slot,
       customerName: name,
       email,

@@ -19,7 +19,11 @@ config.d1_databases = [{
   migrations_dir: "../../drizzle",
 }];
 config.r2_buckets = [{ binding: "MEDIA", bucket_name: process.env.CLOUDFLARE_R2_BUCKET_NAME }];
-config.vars = { ...(config.vars || {}), NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || "https://daniilnizhelskyi.com" };
+config.vars = {
+  ...(config.vars || {}),
+  NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || "https://daniilnizhelskyi.com",
+  ADMIN_USERNAME: process.env.ADMIN_USERNAME || "admin",
+};
 config.routes = customDomains.map((pattern) => ({ pattern, custom_domain: true }));
 config.workers_dev = true;
 config.preview_urls = true;
