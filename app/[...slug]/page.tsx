@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import {
   AboutPage,
   CarePage,
@@ -644,6 +644,7 @@ export async function generateMetadata({
       robots: route[1] ? { index: false, follow: true } : undefined,
     };
   }
+  if (legalDocuments[path] && locale !== "en") redirect(`/${path}`);
   if (legalDocuments[path])
     return {
       title: legalDocuments[path].title,

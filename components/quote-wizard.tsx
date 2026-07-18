@@ -356,7 +356,12 @@ export function QuoteWizard({
         ];
 
   return (
-    <main id="main-content" className="quote-shell" tabIndex={-1}>
+    <main
+      id="main-content"
+      className="quote-shell"
+      tabIndex={-1}
+      lang={locale === "es" ? "es" : "en"}
+    >
       <aside className="quote-rail">
         <Logo inverse locale={locale} />
         <h2>{copy.railTitle}</h2>
@@ -800,12 +805,12 @@ export function QuoteWizard({
                 />
                 <span>
                   {copy.consent}{" "}
-                  <Link href={localizedPath(locale, "/terms")}>
-                    {locale === "es" ? "Términos" : "Terms"}
+                  <Link href="/terms" hrefLang="en-US">
+                    {locale === "es" ? "Términos (EN)" : "Terms"}
                   </Link>{" "}
                   ·{" "}
-                  <Link href={localizedPath(locale, "/privacy")}>
-                    {locale === "es" ? "Privacidad" : "Privacy"}
+                  <Link href="/privacy" hrefLang="en-US">
+                    {locale === "es" ? "Privacidad (EN)" : "Privacy"}
                   </Link>
                 </span>
               </label>

@@ -5,6 +5,7 @@ The website uses edited/cropped derivatives. No source image is presented as a c
 - Living room: Pexels, photo 7051278 — https://www.pexels.com/photo/modern-living-room-with-couch-7051278/
 - Office lounge: Pexels, photo 8477426 by Gustavo Galeano Maz — https://www.pexels.com/photo/contemporary-cosy-office-interior-8477426/
 - Dog: Unsplash, photo hK4teI2Kgy8 — https://unsplash.com/photos/black-white-and-orange-bernese-mountain-dog-hK4teI2Kgy8
+- Dog on sofa editorial: Pexels, photo 9980776 — https://www.pexels.com/photo/black-and-white-dog-lying-on-sofa-in-living-room-9980776/
 - Bedroom: Unsplash, photo aBuOfDJZrvw — https://unsplash.com/photos/modern-bedroom-with-large-windows-and-minimalist-furniture-aBuOfDJZrvw
 - Sofa category cover: Pexels, photo 37252552 — https://www.pexels.com/photo/modern-living-room-with-minimalist-sofa-37252552/
 - Sectional category cover: Pexels, photo 35618226 — https://www.pexels.com/photo/modern-cozy-living-room-with-sectional-sofa-35618226/

@@ -179,3 +179,77 @@ test("quote implementation never fabricates a local submission reference and rec
   assert.doesNotMatch(route, /body\.total|body\.comparison/);
   assert.match(data, /const coreZips = new Set/);
 });
+
+test("Spanish routes share one locale architecture and declare their language", async () => {
+  const [home, quote, legal, i18n] = await Promise.all([
+    render("/es"),
+    render("/es/get-quote"),
+    render("/es/privacy"),
+    readFile(new URL("../lib/i18n.ts", import.meta.url), "utf8"),
+  ]);
+  assert.equal(home.status, 200);
+  assert.equal(quote.status, 200);
+  assert.match(await home.text(), /lang="es"[\s\S]*Textiles limpios/);
+  assert.match(await quote.text(), /lang="es"[\s\S]*¿A dónde vamos\?/);
+  assert.ok([307, 308].includes(legal.status));
+  assert.equal(
+    new URL(legal.headers.get("location"), "http://localhost").pathname,
+    "/privacy",
+  );
+  assert.match(i18n, /export const locales = \["en", "es"\] as const/);
+  assert.match(i18n, /export function localizedPath/);
+  assert.match(i18n, /export function routeLocale/);
+  assert.match(i18n, /export const homeMessages/);
+  assert.match(i18n, /export const quoteMessages/);
+});
+
+test("hero and editorial imagery are not reused across unrelated blocks", async () => {
+  const [home, data] = await Promise.all([
+    readFile(new URL("../components/home-page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../lib/site-data.ts", import.meta.url), "utf8"),
+  ]);
+  const publicImageReferences = `${home}\n${data}`;
+  assert.equal(
+    (publicImageReferences.match(/novaclean-hero\.webp/g) ?? []).length,
+    1,
+  );
+  assert.equal(
+    (publicImageReferences.match(/pet-home-editorial\.webp/g) ?? []).length,
+    1,
+  );
+  assert.equal(
+    (publicImageReferences.match(/pet-safe\.webp/g) ?? []).length,
+    1,
+  );
+  assert.doesNotMatch(
+    publicImageReferences,
+    /cleaning-process|dining-home|BeforeAfter/,
+  );
+  await access(
+    new URL("../public/media/final/pet-home-editorial.webp", import.meta.url),
+  );
+});
+
+test("review placeholders are explicit, noindexed, and absent from the public empty state", async () => {
+  const [preview, reviews, templates] = await Promise.all([
+    render("/reviews-preview"),
+    render("/reviews"),
+    readFile(
+      new URL("../components/page-templates.tsx", import.meta.url),
+      "utf8",
+    ),
+  ]);
+  assert.equal(preview.status, 200);
+  assert.equal(reviews.status, 200);
+  assert.match(preview.headers.get("x-robots-tag") ?? "", /noindex/);
+  assert.match(
+    await preview.text(),
+    /INTERNAL UI PREVIEW — NOT CUSTOMER FEEDBACK/,
+  );
+  assert.doesNotMatch(await reviews.text(), /Not Reviews Yet/);
+  assert.equal((templates.match(/— placeholder"/g) ?? []).length, 6);
+  assert.match(
+    templates,
+    /Not Reviews Yet\. Not Reviews Yet\. Not Reviews Yet\. Not Reviews Yet\. Not Reviews Yet\. Not Reviews Yet\. Not Reviews Yet\. /,
+  );
+});

@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import Link from "next/link";
-import { defaultLocale, localizedPath, type Locale } from "@/lib/i18n";
+import { defaultLocale, type Locale } from "@/lib/i18n";
 
 export function ContactForm({ locale = defaultLocale }: { locale?: Locale }) {
   const [form, setForm] = useState({
@@ -187,12 +187,14 @@ export function ContactForm({ locale = defaultLocale }: { locale?: Locale }) {
           {locale === "es"
             ? "Autorizo a Novaclean a usar esta información para responder bajo el "
             : "I authorize Novaclean to use this information to respond under the "}
-          <Link href={localizedPath(locale, "/notice-at-collection")}>
-            {locale === "es" ? "aviso de recopilación" : "notice at collection"}
+          <Link href="/notice-at-collection" hrefLang="en-US">
+            {locale === "es"
+              ? "aviso de recopilación (EN)"
+              : "notice at collection"}
           </Link>{" "}
           {locale === "es" ? "y la " : "and "}
-          <Link href={localizedPath(locale, "/privacy")}>
-            {locale === "es" ? "política de privacidad" : "privacy policy"}
+          <Link href="/privacy" hrefLang="en-US">
+            {locale === "es" ? "política de privacidad (EN)" : "privacy policy"}
           </Link>
           .
         </span>

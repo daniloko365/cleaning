@@ -166,15 +166,18 @@ export function HomePageContent({
         </div>
       </section>
 
-      <section className="section image-story image-story--pet">
+      <section
+        className="section image-story image-story--pet"
+        id="pet-homes"
+      >
         <div className="shell image-story__grid">
           <Reveal className="image-story__media">
             <img
-              src="/media/final/pet-safe.webp"
+              src="/media/final/pet-home-editorial.webp"
               alt={
                 locale === "es"
-                  ? "Perro descansando en casa"
-                  : "Bernese mountain dog relaxing at home"
+                  ? "Border collie descansando en un sofá tapizado"
+                  : "Border collie resting on an upholstered sofa at home"
               }
               loading="lazy"
             />

@@ -266,17 +266,20 @@ export function Footer({ locale = defaultLocale }: { locale?: Locale }) {
         <span>© {year} Novaclean</span>
         <span>{brand.region}</span>
         <span>
-          <Link href={localizedPath(locale, "/privacy")}>
-            {locale === "es" ? "Privacidad" : "Privacy"}
+          <Link href="/privacy" hrefLang="en-US">
+            {locale === "es" ? "Privacidad (EN)" : "Privacy"}
           </Link>{" "}
           ·{" "}
-          <Link href={localizedPath(locale, "/terms")}>
-            {locale === "es" ? "Términos" : "Terms"}
+          <Link href="/terms" hrefLang="en-US">
+            {locale === "es" ? "Términos (EN)" : "Terms"}
           </Link>{" "}
-          · <Link href={localizedPath(locale, "/cookie-policy")}>Cookies</Link>{" "}
           ·{" "}
-          <Link href={localizedPath(locale, "/accessibility")}>
-            {locale === "es" ? "Accesibilidad" : "Accessibility"}
+          <Link href="/cookie-policy" hrefLang="en-US">
+            Cookies{locale === "es" ? " (EN)" : ""}
+          </Link>{" "}
+          ·{" "}
+          <Link href="/accessibility" hrefLang="en-US">
+            {locale === "es" ? "Accesibilidad (EN)" : "Accessibility"}
           </Link>
         </span>
       </div>
@@ -315,13 +318,13 @@ export function SiteShell({
     document.documentElement.lang = locale === "es" ? "es-US" : "en-US";
   }, [locale]);
   return (
-    <>
+    <div lang={locale === "es" ? "es" : "en"}>
       <Header locale={locale} />
       <main id="main-content" tabIndex={-1}>
         {children}
       </main>
       <Footer locale={locale} />
       <MobileConversionBar locale={locale} />
-    </>
+    </div>
   );
 }
