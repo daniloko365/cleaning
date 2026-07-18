@@ -16,5 +16,7 @@ config.d1_databases = [{
 }];
 config.r2_buckets = [{ binding: "MEDIA", bucket_name: process.env.CLOUDFLARE_R2_BUCKET_NAME }];
 config.vars = { ...(config.vars || {}), NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || "https://novacleanoc.com" };
+config.triggers = { ...(config.triggers || {}), crons: ["17 8 * * *"] };
+config.observability = { enabled: true, logs: { enabled: true, invocation_logs: true } };
 await writeFile(targetPath, `${JSON.stringify(config, null, 2)}\n`);
 console.log(`Prepared ${targetPath.pathname} for Worker ${config.name}.`);

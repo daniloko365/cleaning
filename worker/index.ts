@@ -1,10 +1,22 @@
 /** Cloudflare Worker entry point for the vinext-starter template. */
 import { handleImageOptimization, DEFAULT_DEVICE_SIZES, DEFAULT_IMAGE_SIZES } from "vinext/server/image-optimization";
 import handler from "vinext/server/app-router-entry";
+import { enforceRateLimit } from "../lib/rate-limit";
+import { runRetention } from "../lib/retention";
+
+type MediaBucket = {
+  list(options: { prefix: string; cursor?: string; limit?: number }): Promise<{
+    objects: { key: string; uploaded: Date | string }[];
+    truncated: boolean;
+    cursor?: string;
+  }>;
+  delete(keys: string | string[]): Promise<void>;
+};
 
 interface Env {
   ASSETS: Fetcher;
   DB: D1Database;
+  MEDIA: MediaBucket;
   IMAGES: {
     input(stream: ReadableStream): {
       transform(options: Record<string, unknown>): {
@@ -17,6 +29,11 @@ interface Env {
 interface ExecutionContext {
   waitUntil(promise: Promise<unknown>): void;
   passThroughOnException(): void;
+}
+
+interface ScheduledController {
+  cron: string;
+  scheduledTime: number;
 }
 
 function secure(response: Response, request: Request) {
@@ -45,6 +62,18 @@ const worker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
 
+    if (url.pathname.startsWith("/api/")) {
+      try {
+        const limited = await enforceRateLimit(request, env.DB);
+        if (limited) return secure(limited, request);
+      } catch {
+        return secure(Response.json(
+          { error: "The request security check is temporarily unavailable." },
+          { status: 503, headers: { "cache-control": "no-store" } },
+        ), request);
+      }
+    }
+
     if (url.pathname === "/_vinext/image") {
       const allowedWidths = [...DEFAULT_DEVICE_SIZES, ...DEFAULT_IMAGE_SIZES];
       const response = await handleImageOptimization(request, {
@@ -58,6 +87,10 @@ const worker = {
     }
 
     return secure(await handler.fetch(request, env, ctx), request);
+  },
+
+  async scheduled(_controller: ScheduledController, env: Env, ctx: ExecutionContext) {
+    ctx.waitUntil(runRetention(env));
   },
 };
 

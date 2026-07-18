@@ -78,6 +78,7 @@ test("project includes storage, migrations, favicon, OG and only two verify labe
     access(new URL("../drizzle/0001_military_zaladane.sql", import.meta.url)),
     access(new URL("../drizzle/0002_complete_lucky_pierre.sql", import.meta.url)),
     access(new URL("../drizzle/0003_odd_gargoyle.sql", import.meta.url)),
+    access(new URL("../drizzle/0004_dazzling_albert_cleary.sql", import.meta.url)),
   ]);
 });
 

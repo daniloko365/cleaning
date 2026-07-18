@@ -26,6 +26,7 @@ export const quotes = sqliteTable("quotes", {
   consentAt: text("consent_at").notNull(),
   termsVersion: text("terms_version").notNull().default("2026-07-16"),
   privacyVersion: text("privacy_version").notNull().default("2026-07-16"),
+  legalHold: integer("legal_hold", { mode: "boolean" }).notNull().default(false),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
   updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
@@ -39,6 +40,7 @@ export const careRequests = sqliteTable("care_requests", {
   message: text("message").notNull().default(""),
   status: text("status").notNull().default("received"),
   privacyVersion: text("privacy_version").notNull().default("2026-07-16"),
+  legalHold: integer("legal_hold", { mode: "boolean" }).notNull().default(false),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
@@ -73,6 +75,7 @@ export const commercialLeads = sqliteTable("commercial_leads", {
   uploadKeys: text("upload_keys", { mode: "json" }).$type<string[]>().notNull().default([]),
   consentAt: text("consent_at").notNull(),
   privacyVersion: text("privacy_version").notNull().default("2026-07-16"),
+  legalHold: integer("legal_hold", { mode: "boolean" }).notNull().default(false),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
@@ -88,5 +91,27 @@ export const contactMessages = sqliteTable("contact_messages", {
   message: text("message").notNull(),
   consentAt: text("consent_at").notNull(),
   privacyVersion: text("privacy_version").notNull().default("2026-07-16"),
+  legalHold: integer("legal_hold", { mode: "boolean" }).notNull().default(false),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const rateLimits = sqliteTable("rate_limits", {
+  key: text("key").primaryKey(),
+  hits: integer("hits").notNull().default(1),
+  expiresAt: text("expires_at").notNull(),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const retentionRuns = sqliteTable("retention_runs", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  status: text("status").notNull().default("running"),
+  analyticsDeleted: integer("analytics_deleted").notNull().default(0),
+  contactDeleted: integer("contact_deleted").notNull().default(0),
+  commercialDeleted: integer("commercial_deleted").notNull().default(0),
+  careDeleted: integer("care_deleted").notNull().default(0),
+  quoteDeleted: integer("quote_deleted").notNull().default(0),
+  mediaDeleted: integer("media_deleted").notNull().default(0),
+  error: text("error").notNull().default(""),
+  startedAt: text("started_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  completedAt: text("completed_at"),
 });

@@ -1,14 +1,14 @@
 # Novaclean independent completion audit
 
-Audit date: 2026-07-16  
-Blueprint: `../orange_county_textile_cleaning_website_blueprint.md`  
+Audit date: 2026-07-17
+Blueprint: `../orange_county_textile_cleaning_website_blueprint.md`
 Market workbook: `../../all info/orange_county_textile_market_audit_calling_workbook 2.numbers`
 
 ## Independent verdict
 
-The codebase is a tested release candidate for a mobile Orange County upholstery and textile-care business. The conversion architecture, server-side pricing, D1/R2 data path, customer-care lookup, legal center, security headers, accessibility, responsive behavior, SEO controls, and Cloudflare deployment path are implemented.
+The codebase is a tested and deployed technical production candidate for a mobile Orange County upholstery and textile-care business. The conversion architecture, server-side pricing, live D1/R2 path, customer-care lookup, protected operations dashboard, automated retention, application-level abuse controls, legal center, security headers, accessibility, responsive behavior, SEO controls, and Cloudflare Worker are implemented.
 
-It is **not yet approved for unrestricted public launch**. The remaining blockers are business facts and external account configuration, not missing page templates: verified legal entity and public contact details, California counsel review, insurance/credential evidence, real staff and work proof, production communications/calendar operations, a tested retention/deletion workflow, and authenticated Cloudflare resources. The current hosted review version should remain private until those inputs are supplied.
+It is **not yet approved for unrestricted public launch or paid promotion**. The remaining blockers are business facts and operating providers, not missing infrastructure or page templates: verified legal entity and public contact details, California counsel review, insurance/credential evidence, real staff and work proof, and production communications/calendar ownership. The public `workers.dev` origin is suitable for technical QA but should not be promoted or used for real customer intake until those inputs are supplied.
 
 ## Market weaknesses closed
 
@@ -51,6 +51,9 @@ The price program still needs a documented refresh/retirement owner and Californ
 10. **Unverified structured data:** `LocalBusiness` was replaced by `Organization` until a real NAP can support local-business markup. Canonical origin is environment-driven.
 11. **Unverified claims:** the UV-method statement and unverified public email were removed; “exact price” and live-availability language were replaced with estimate/preference language.
 12. **API and response hardening:** JSON payload limits, stricter email/enumeration/date validation, consent-policy versioning, constant-work admin token comparison, no-store API responses, CSP, clickjacking, MIME, referrer, permissions, COOP, HSTS, and robots headers were added.
+13. **Production abuse control:** D1-backed per-route limits now protect quote, upload, commercial, contact, care, analytics, and admin routes. Fingerprints rotate daily and do not store raw IP addresses.
+14. **Retention and orphan media:** a daily Worker cron removes eligible analytics, stale leads/requests, old service records by status, expired rate-limit counters, and unsubmitted R2 media. Legal holds exempt operational records and every run is logged.
+15. **Operations handoff:** the token-protected dashboard now exposes recent work queues, safe status updates, legal holds, guarded deletion with media cleanup, and manual retention execution instead of aggregate counts alone.
 
 ## Legal and privacy coverage
 
@@ -61,15 +64,15 @@ The policy center now contains substantive, versioned pages for:
 - Website and Service Terms covering formation, estimates, appointments, customer duties, change approval, outcomes, payment state, care, media, website use, and preserved statutory rights.
 - SMS Terms, cancellation/rescheduling, care guarantee, operational photo/media policy, commercial terms, accessibility statement, Cookie and Storage Policy, and Claims and Damage Process.
 
-The forms link the notice/privacy/terms at the point of consent and store policy version `2026-07-16`. Quote uploads do not grant marketing permission. The current build does not use third-party advertising cookies and suppresses optional analytics under Global Privacy Control or Do Not Track.
+The forms link the notice/privacy/terms at the point of consent and store policy version `2026-07-17`. Quote uploads do not grant marketing permission. The current build does not use third-party advertising cookies and suppresses optional analytics under Global Privacy Control or Do Not Track.
 
-These pages are operationally specific, but they do not replace advice from a California attorney. Entity identity, physical/public contact disclosures, venue/contracting language, insurance, actual retention automation, and the final marketing/SMS implementation require counsel and operations verification.
+These pages are operationally specific, but they do not replace advice from a California attorney. Entity identity, physical/public contact disclosures, venue/contracting language, insurance, and the final marketing/SMS implementation require counsel and operations verification. Retention automation and legal-hold controls are now implemented and production-tested; the business still needs to assign an accountable operator and approve the stated periods.
 
 ## Verification evidence
 
 - `npm run lint`: pass.
 - `npm audit`: 0 known dependency vulnerabilities after secure PostCSS/esbuild overrides and current Next/Vite/Cloudflare tooling updates.
-- `npm test`: pass after final build; rendered route, pricing rule, security headers, legal pages, sitemap, server-price integrity, migration, and media sanitizer coverage.
+- `npm test`: 15/15 pass after production-origin build; rendered routes, pricing rule, security headers, legal pages, sitemap, server-price integrity, migrations, media sanitizer, rate limiting, retention, cron, and operations controls are covered.
 - End-to-end browser story: quote UI → `/api/quotes` → local D1 → confirmation → `/track`: pass.
 - Tampered client total `$1`: ignored; API returned canonical `$69` estimate and `$99` comparison.
 - Out-of-area quote: rejected. Fake care reference: rejected. Invalid JPG: rejected. Valid PNG: stored through local R2.
@@ -78,19 +81,20 @@ These pages are operationally specific, but they do not replace advice from a Ca
 - Axe 4.11.4: zero automated violations on home, pricing, quote, privacy, commercial request, contact, portal, and admin after fixes. Automated tools cover only part of accessibility; manual keyboard, zoom, responsive overflow, reduced-motion, and mobile menu checks were also performed.
 - Desktop and 390 px mobile visual checks: no horizontal overflow, no framework error overlay, expected navigation and conversion controls visible.
 - Route security: API responses are `no-store`; private/operational routes add `X-Robots-Tag`; all responses receive the configured security-header set.
+- GitHub: commit `e6675d6` was pushed to `main`; verification run `29626973000` passed lint/build/tests. Cloudflare deployment remained intentionally skipped in CI because unattended deployment secrets are not yet configured.
+- Cloudflare production: Worker `novaclean-oc` deployed at `https://novaclean-oc.daniel-c45.workers.dev`; D1 migrations `0000`–`0004` are applied; R2 `novaclean-oc-media`, observability, and cron `17 8 * * *` are active.
+- Production full-story checks: homepage/privacy 200; expected canonical and security headers; D1-backed unmatched care lookup 404; protected admin 200 with valid token; retention run completed and logged; R2 image upload/read/delete succeeded; ninth quote attempt in a 15-minute test bucket returned 429 after eight allowed requests.
 
 ## Remaining launch blockers and limitations
 
-1. **Cloudflare account authentication:** the repository contains a verified Workers deployment generator and GitHub Actions workflow, but this machine is not authenticated to the owner’s Cloudflare account and the available dashboard is at login. Production D1/R2 IDs and scoped credentials must be configured.
-2. **Correct Cloudflare product:** this is a full-stack Next.js application with route handlers, SSR, D1, and R2. It must deploy to Cloudflare Workers, not a static Pages export. Static Pages would silently break core functionality.
-3. **Legal business facts:** legal entity, business/public address treatment, verified phone/text/email, contracting identity, and jurisdiction language are still unknown.
-4. **Operational providers:** email sender, SMS provider and suppression logic, real route calendar, payment/deposit policy, and CRM notifications are not connected and are not simulated.
-5. **Trust evidence:** team, reviews, results, insurance, licenses, certifications, and background-check claims remain unpublished until verified.
-6. **Retention execution:** stated retention periods need an operational deletion job, legal-hold process, request log, and accountable owner before public data collection.
-7. **Abuse controls:** Cloudflare WAF/rate limits, bot controls, alerting, and production log retention should be configured at the account layer after deployment.
-8. **Media lifecycle:** unsubmitted uploads can be orphaned and require the retention cleanup job; public result use still requires a separate signed release.
-9. **Price operations:** competitor sources need periodic evidence capture and refresh; the current check is dated July 2026.
+1. **Legal business facts:** legal entity, business/public address treatment, verified phone/text/email, contracting identity, and jurisdiction language are still unknown.
+2. **Operational providers:** email sender, SMS provider and suppression logic, real route calendar, payment/deposit policy, and CRM notifications are not connected and are not simulated.
+3. **Trust evidence:** team, reviews, results, insurance, licenses, certifications, and background-check claims remain unpublished until verified.
+4. **Counsel and price operations:** California counsel must review advertising comparisons, terms, retention periods, contact disclosures, and the contracting entity. Competitor sources need periodic evidence capture and refresh; the current check is dated July 2026.
+5. **Custom domain and unattended releases:** the Worker production origin is live, but the final domain is not selected/attached. GitHub Actions verifies every push; automatic Cloudflare deployment still needs scoped repository secrets/variables or a native Workers Builds connection.
+6. **Account-layer defense:** application-level limits are enforced. Cloudflare WAF/bot rules, alert ownership, log-retention policy, and incident routing remain account/operations decisions rather than code blockers.
+7. **Operating ownership:** retention is automated and tested, but a named owner must review failures/legal holds and respond to privacy, claim, accessibility, and care queues before real data collection.
 
 ## Release recommendation
 
-Approve the code for source control, private stakeholder review, and authenticated production-environment setup. Do not open the site to the public or collect real customer data until the blockers above are assigned, verified, and recorded. After that, rerun migrations, the end-to-end quote/track flow, accessibility checks, security headers, and canonical/domain checks on the final Cloudflare origin.
+Approve the code and current Worker environment for technical production QA and stakeholder review. Do not market the origin or collect real customer data until the blockers above are assigned, verified, and recorded. When the final domain and business facts arrive, rebuild with that origin, rerun the end-to-end quote/track flow, test provider delivery and route capacity, recheck accessibility/security/canonicals, and then remove only the proof gates supported by real evidence.

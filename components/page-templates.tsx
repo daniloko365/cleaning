@@ -7,7 +7,7 @@ import { SiteShell } from "@/components/site-shell";
 import { CareForm } from "@/components/care-form";
 import { CommercialForm } from "@/components/commercial-form";
 import { ContactForm } from "@/components/contact-form";
-import type { LegalDocument } from "@/lib/legal-content";
+import { LEGAL_VERSION, type LegalDocument } from "@/lib/legal-content";
 import { cities, cityName, compareDate, faq as faqData, getPrice, getPriceSource, guides, minimums, money, prices, servicePages } from "@/lib/site-data";
 import { siteUrl } from "@/lib/site-url";
 
@@ -42,11 +42,11 @@ export function LegalDocumentPage({ document }: { document: LegalDocument }) {
       <section className="section section--ivory">
         <div className="shell legal-layout">
           <article className="content-prose legal-document">
-            <div className="legal-version"><strong>Effective July 16, 2026</strong><span>Version 2026-07-16</span></div>
+            <div className="legal-version"><strong>Effective July 17, 2026</strong><span>Version {LEGAL_VERSION}</span></div>
             {document.sections.map((section) => <section key={section.title}><h2>{section.title}</h2>{section.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}{section.bullets && <ul>{section.bullets.map((item) => <li key={item}>{item}</li>)}</ul>}</section>)}
             {document.sources && <section className="legal-sources"><h2>Official reference material</h2><p>These links explain the regulatory framework; they are not a substitute for advice about Novaclean’s final legal entity and operations.</p><ul>{document.sources.map((source) => <li key={source.url}><a className="text-link" href={source.url} target="_blank" rel="noreferrer">{source.label} ↗</a></li>)}</ul></section>}
           </article>
-          <aside className="content-aside legal-nav" role="note"><p className="eyebrow">Policy center</p><h3>Related records</h3><nav aria-label="Legal and policy pages"><Link href="/privacy">Privacy policy</Link><Link href="/notice-at-collection">Notice at collection</Link><Link href="/terms">Service terms</Link><Link href="/cookie-policy">Cookie & storage</Link><Link href="/photo-media-consent">Photo policy</Link><Link href="/cancellation">Cancellation</Link><Link href="/guarantee">Care guarantee</Link><Link href="/claims-damage">Claims & damage</Link><Link href="/accessibility">Accessibility</Link><Link href="/contact">Contact / request rights</Link></nav><p className="legal-note">California counsel must confirm the final entity name, public contact details, contracting language, insurance facts, and actual retention workflow before public launch.</p></aside>
+          <aside className="content-aside legal-nav" role="note"><p className="eyebrow">Policy center</p><h3>Related records</h3><nav aria-label="Legal and policy pages"><Link href="/privacy">Privacy policy</Link><Link href="/notice-at-collection">Notice at collection</Link><Link href="/terms">Service terms</Link><Link href="/cookie-policy">Cookie & storage</Link><Link href="/photo-media-consent">Photo policy</Link><Link href="/cancellation">Cancellation</Link><Link href="/guarantee">Care guarantee</Link><Link href="/claims-damage">Claims & damage</Link><Link href="/accessibility">Accessibility</Link><Link href="/contact">Contact / request rights</Link></nav><p className="legal-note">California counsel must confirm the final entity name, public contact details, contracting language, insurance facts, retention periods, and accountable operations owner before unrestricted public launch.</p></aside>
         </div>
       </section>
     </SiteShell>

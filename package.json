@@ -13,7 +13,7 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
     "cf:prepare": "node scripts/prepare-cloudflare-config.mjs",
-    "cf:deploy": "npm run build && npm run cf:prepare && wrangler deploy --config dist/server/wrangler.deploy.json"
+    "cf:deploy": "npm run build && npm run cf:prepare && wrangler d1 migrations apply \"$CLOUDFLARE_D1_DATABASE_NAME\" --remote --config dist/server/wrangler.deploy.json && wrangler deploy --config dist/server/wrangler.deploy.json"
   },
   "dependencies": {
     "drizzle-orm": "0.45.2",
