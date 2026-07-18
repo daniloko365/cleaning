@@ -17,6 +17,7 @@ interface Env {
   ASSETS: Fetcher;
   DB: D1Database;
   MEDIA: MediaBucket;
+  NEXT_PUBLIC_SITE_URL?: string;
   IMAGES: {
     input(stream: ReadableStream): {
       transform(options: Record<string, unknown>): {
@@ -61,6 +62,17 @@ function secure(response: Response, request: Request) {
 const worker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
+    const canonicalUrl = new URL(env.NEXT_PUBLIC_SITE_URL || "https://daniilnizhelskyi.com");
+
+    const alternateHostname = url.hostname !== canonicalUrl.hostname
+      && (url.hostname === `www.${canonicalUrl.hostname}` || url.hostname.endsWith(".workers.dev"));
+    const canonicalProtocolMismatch = url.hostname === canonicalUrl.hostname
+      && url.protocol !== canonicalUrl.protocol;
+
+    if (canonicalProtocolMismatch || alternateHostname) {
+      const target = new URL(`${url.pathname}${url.search}`, canonicalUrl);
+      return secure(Response.redirect(target, 308), request);
+    }
 
     if (url.pathname.startsWith("/api/")) {
       try {

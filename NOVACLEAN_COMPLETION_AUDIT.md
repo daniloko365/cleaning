@@ -1,6 +1,6 @@
 # Novaclean independent completion audit
 
-Audit date: 2026-07-17
+Audit date: 2026-07-18
 Blueprint: `../orange_county_textile_cleaning_website_blueprint.md`
 Market workbook: `../../all info/orange_county_textile_market_audit_calling_workbook 2.numbers`
 
@@ -8,7 +8,7 @@ Market workbook: `../../all info/orange_county_textile_market_audit_calling_work
 
 The codebase is a tested and deployed technical production candidate for a mobile Orange County upholstery and textile-care business. The conversion architecture, server-side pricing, live D1/R2 path, customer-care lookup, protected operations dashboard, automated retention, application-level abuse controls, legal center, security headers, accessibility, responsive behavior, SEO controls, and Cloudflare Worker are implemented.
 
-It is **not yet approved for unrestricted public launch or paid promotion**. The remaining blockers are business facts and operating providers, not missing infrastructure or page templates: verified legal entity and public contact details, California counsel review, insurance/credential evidence, real staff and work proof, and production communications/calendar ownership. The public `workers.dev` origin is suitable for technical QA but should not be promoted or used for real customer intake until those inputs are supplied.
+It is **not yet approved for unrestricted public launch or paid promotion**. The remaining blockers are business facts and operating providers, not missing infrastructure or page templates: verified legal entity and public contact details, California counsel review, insurance/credential evidence, real staff and work proof, and production communications/calendar ownership. The custom domain is now technically live, but it should not be promoted or used for real customer intake until those inputs are supplied.
 
 ## Market weaknesses closed
 
@@ -82,8 +82,8 @@ These pages are operationally specific, but they do not replace advice from a Ca
 - Desktop and 390 px mobile visual checks: no horizontal overflow, no framework error overlay, expected navigation and conversion controls visible.
 - Route security: API responses are `no-store`; private/operational routes add `X-Robots-Tag`; all responses receive the configured security-header set.
 - GitHub: production-operations commit `f33a162` was pushed to `main`; verification run `29628012644` passed lint/build/15 tests. Cloudflare deployment remained intentionally skipped in CI because unattended deployment secrets are not yet configured.
-- Cloudflare production: Worker `novaclean-oc` deployed at `https://novaclean-oc.daniel-c45.workers.dev`; D1 migrations `0000`–`0004` are applied; R2 `novaclean-oc-media`, observability, and cron `17 8 * * *` are active.
-- Production full-story checks: homepage/privacy 200; expected canonical and security headers; D1-backed unmatched care lookup 404; protected admin 200 with valid token; retention run completed and logged; R2 image upload/read/delete succeeded; ninth quote attempt in a 15-minute test bucket returned 429 after eight allowed requests.
+- Cloudflare production: Worker `novaclean-oc` serves `https://daniilnizhelskyi.com`; `www` and `workers.dev` redirect to the canonical origin; D1 migrations `0000`–`0004` are applied; R2 `novaclean-oc-media`, observability, and cron `17 8 * * *` are active.
+- Production full-story checks: authoritative apex/`www` DNS and TLS active; homepage/privacy 200; `www` and `workers.dev` 308 with path/query preserved; expected canonical and security headers; D1-backed unmatched care lookup 404; protected admin 200 with valid token; retention run completed and logged; R2 image upload/read/delete succeeded; ninth quote attempt in a 15-minute test bucket returned 429 after eight allowed requests.
 
 ## Remaining launch blockers and limitations
 
@@ -91,10 +91,10 @@ These pages are operationally specific, but they do not replace advice from a Ca
 2. **Operational providers:** email sender, SMS provider and suppression logic, real route calendar, payment/deposit policy, and CRM notifications are not connected and are not simulated.
 3. **Trust evidence:** team, reviews, results, insurance, licenses, certifications, and background-check claims remain unpublished until verified.
 4. **Counsel and price operations:** California counsel must review advertising comparisons, terms, retention periods, contact disclosures, and the contracting entity. Competitor sources need periodic evidence capture and refresh; the current check is dated July 2026.
-5. **Custom domain and unattended releases:** the Worker production origin is live, but the final domain is not selected/attached. GitHub Actions verifies every push; automatic Cloudflare deployment still needs scoped repository secrets/variables or a native Workers Builds connection.
+5. **Unattended releases:** the custom domain and Worker production origin are live. GitHub Actions verifies every push; automatic Cloudflare deployment still needs scoped repository secrets/variables or a native Workers Builds connection.
 6. **Account-layer defense:** application-level limits are enforced. Cloudflare WAF/bot rules, alert ownership, log-retention policy, and incident routing remain account/operations decisions rather than code blockers.
 7. **Operating ownership:** retention is automated and tested, but a named owner must review failures/legal holds and respond to privacy, claim, accessibility, and care queues before real data collection.
 
 ## Release recommendation
 
-Approve the code and current Worker environment for technical production QA and stakeholder review. Do not market the origin or collect real customer data until the blockers above are assigned, verified, and recorded. When the final domain and business facts arrive, rebuild with that origin, rerun the end-to-end quote/track flow, test provider delivery and route capacity, recheck accessibility/security/canonicals, and then remove only the proof gates supported by real evidence.
+Approve the code, custom domain, and current Worker environment for technical production QA and stakeholder review. Do not market the origin or collect real customer data until the blockers above are assigned, verified, and recorded. When the business facts and operating providers arrive, rerun the end-to-end quote/track flow, test provider delivery and route capacity, recheck accessibility/security/canonicals, and then remove only the proof gates supported by real evidence.

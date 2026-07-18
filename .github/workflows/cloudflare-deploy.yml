@@ -15,7 +15,8 @@ jobs:
     permissions:
       contents: read
     env:
-      NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL || 'https://novacleanoc.com' }}
+      NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL || 'https://daniilnizhelskyi.com' }}
+      CLOUDFLARE_CUSTOM_DOMAINS: ${{ vars.CLOUDFLARE_CUSTOM_DOMAINS || 'daniilnizhelskyi.com,www.daniilnizhelskyi.com' }}
       CLOUDFLARE_WORKER_NAME: ${{ vars.CLOUDFLARE_WORKER_NAME || 'novaclean-oc' }}
       CLOUDFLARE_D1_DATABASE_NAME: ${{ vars.CLOUDFLARE_D1_DATABASE_NAME }}
       CLOUDFLARE_D1_DATABASE_ID: ${{ secrets.CLOUDFLARE_D1_DATABASE_ID }}

@@ -70,8 +70,12 @@ test("migration, cron and protected admin record controls ship together", async 
   assert.match(migration, /`legal_hold`/);
   assert.match(worker, /enforceRateLimit/);
   assert.match(worker, /async scheduled/);
+  assert.match(worker, /workers\.dev/);
+  assert.match(worker, /canonicalProtocolMismatch/);
+  assert.match(worker, /Response\.redirect\(target, 308\)/);
   assert.match(prepare, /17 8 \* \* \*/);
+  assert.match(prepare, /custom_domain: true/);
+  assert.match(prepare, /daniilnizhelskyi\.com,www\.daniilnizhelskyi\.com/);
   assert.match(records, /Remove the legal hold before deletion/);
   await access(new URL("../app/api/admin/retention/route.ts", import.meta.url));
 });
-

@@ -33,12 +33,13 @@ The local URL is `http://localhost:3000`. The Vite/Cloudflare development layer 
 
 The application requires server rendering, Route Handlers, D1, and R2. Cloudflare’s correct hosting target for this full-stack Next.js architecture is **Cloudflare Workers**. A static Pages export is not equivalent and would break quotes, uploads, tracking, and admin functionality.
 
-The verified production Worker is currently available at [novaclean-oc.daniel-c45.workers.dev](https://novaclean-oc.daniel-c45.workers.dev). It is a technical production environment, not authorization to begin marketing or collect real customer data while the business identity and operating contacts remain placeholders.
+The verified production site is [daniilnizhelskyi.com](https://daniilnizhelskyi.com). `www.daniilnizhelskyi.com` and the technical `workers.dev` hostname redirect to that canonical origin. A working domain is not authorization to begin marketing or collect real customer data while the business identity and operating contacts remain placeholders.
 
 GitHub Actions verifies every push to `main` and deploys automatically only after the repository secrets/variables in `CLOUDFLARE_DEPLOYMENT.md` are configured. An authenticated release from this machine uses one migration-safe command:
 
 ```bash
-export NEXT_PUBLIC_SITE_URL=https://novaclean-oc.daniel-c45.workers.dev
+export NEXT_PUBLIC_SITE_URL=https://daniilnizhelskyi.com
+export CLOUDFLARE_CUSTOM_DOMAINS=daniilnizhelskyi.com,www.daniilnizhelskyi.com
 export CLOUDFLARE_WORKER_NAME=novaclean-oc
 export CLOUDFLARE_D1_DATABASE_NAME=novaclean-oc-db
 export CLOUDFLARE_D1_DATABASE_ID=your-d1-id

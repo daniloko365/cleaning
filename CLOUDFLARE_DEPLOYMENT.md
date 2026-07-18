@@ -12,10 +12,13 @@ Therefore the repository is prepared for Cloudflare’s Workers hosting surface,
 
 ## Current production state
 
-Verified on 2026-07-17:
+Verified on 2026-07-18:
 
 - Worker: `novaclean-oc`
-- Origin: [https://novaclean-oc.daniel-c45.workers.dev](https://novaclean-oc.daniel-c45.workers.dev)
+- Canonical origin: [https://daniilnizhelskyi.com](https://daniilnizhelskyi.com)
+- Custom domains: `daniilnizhelskyi.com` and `www.daniilnizhelskyi.com`; `www` redirects permanently to the apex
+- Technical origin: `https://novaclean-oc.daniel-c45.workers.dev`; redirects permanently to the canonical origin
+- Zone HTTPS policy: `Always Use HTTPS` enabled; plain HTTP redirects before the Worker
 - D1 database: `novaclean-oc-db`
 - R2 bucket: `novaclean-oc-media`
 - Scheduled retention: `17 8 * * *` UTC
@@ -23,7 +26,7 @@ Verified on 2026-07-17:
 - Observability/invocation logs: enabled
 - Protected admin secret: installed directly with Wrangler; never committed
 
-Production checks covered the homepage/canonical/security headers, a D1-backed care lookup, authenticated admin summary and manual retention run, R2 upload/read/delete, and a live 429 response after the configured quote-request limit.
+Production checks covered authoritative DNS, TLS, apex and `www` routing, canonical/security headers, homepage and privacy rendering, a D1-backed care lookup, authenticated admin summary and manual retention run, R2 upload/read/delete, and a live 429 response after the configured quote-request limit. The domain switch replaced the prior apex/`www` website records while preserving all MX and SPF records.
 
 ## One-time Cloudflare setup
 
@@ -40,7 +43,7 @@ The Worker, D1 database, R2 bucket, secret, migrations, and cron already exist i
    - `CLOUDFLARE_R2_BUCKET_NAME`
    - `CLOUDFLARE_WORKER_NAME` (recommended: `novaclean-oc`)
    - `NEXT_PUBLIC_SITE_URL` (the verified production origin)
-4. Point the verified custom domain to the deployed Worker only after the legal entity, public contact details, price-source review, insurance facts, and external communications are approved. Rebuild with that exact origin so every canonical, sitemap URL, and structured-data URL changes together.
+   - `CLOUDFLARE_CUSTOM_DOMAINS` (comma-separated apex and `www` hostnames)
 
 The workflow always runs lint, build, and tests. Deployment is skipped safely until all required Cloudflare credentials and resource identifiers exist.
 
@@ -49,7 +52,8 @@ The workflow always runs lint, build, and tests. Deployment is skipped safely un
 ```bash
 npm ci
 npm test
-export NEXT_PUBLIC_SITE_URL=https://novacleanoc.com
+export NEXT_PUBLIC_SITE_URL=https://daniilnizhelskyi.com
+export CLOUDFLARE_CUSTOM_DOMAINS=daniilnizhelskyi.com,www.daniilnizhelskyi.com
 export CLOUDFLARE_WORKER_NAME=novaclean-oc
 export CLOUDFLARE_D1_DATABASE_NAME=novaclean-oc-db
 export CLOUDFLARE_D1_DATABASE_ID=your-d1-id
