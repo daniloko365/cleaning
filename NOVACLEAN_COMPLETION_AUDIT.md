@@ -81,7 +81,7 @@ These pages are operationally specific, but they do not replace advice from a Ca
 - Axe 4.11.4: zero automated violations on home, pricing, quote, privacy, commercial request, contact, portal, and admin after fixes. Automated tools cover only part of accessibility; manual keyboard, zoom, responsive overflow, reduced-motion, and mobile menu checks were also performed.
 - Desktop and 390 px mobile visual checks: no horizontal overflow, no framework error overlay, expected navigation and conversion controls visible.
 - Route security: API responses are `no-store`; private/operational routes add `X-Robots-Tag`; all responses receive the configured security-header set.
-- GitHub: commit `e6675d6` was pushed to `main`; verification run `29626973000` passed lint/build/tests. Cloudflare deployment remained intentionally skipped in CI because unattended deployment secrets are not yet configured.
+- GitHub: production-operations commit `f33a162` was pushed to `main`; verification run `29628012644` passed lint/build/15 tests. Cloudflare deployment remained intentionally skipped in CI because unattended deployment secrets are not yet configured.
 - Cloudflare production: Worker `novaclean-oc` deployed at `https://novaclean-oc.daniel-c45.workers.dev`; D1 migrations `0000`–`0004` are applied; R2 `novaclean-oc-media`, observability, and cron `17 8 * * *` are active.
 - Production full-story checks: homepage/privacy 200; expected canonical and security headers; D1-backed unmatched care lookup 404; protected admin 200 with valid token; retention run completed and logged; R2 image upload/read/delete succeeded; ninth quote attempt in a 15-minute test bucket returned 429 after eight allowed requests.
 
